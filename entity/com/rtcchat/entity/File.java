@@ -40,7 +40,7 @@ public class File implements Serializable{
 	private String filename;//文件名
 	private String filepath;//文件存储相对路径
 	private Date uploadTime;//文件上传时间
-	private Enum<FileType> filetype;//文件类型，是群组的文件还是用户的文件
+	private String filetype;//文件类型，是群组的文件还是用户的文件
 	private User belongToUser;//当文件名为user的时候此属性不为空，表示属于哪个用户
 	private User sendToUser;//当文件名为user的时候此属性不为空，表示发送给哪个用户
 	private Group belongToGroup;//当文件名为group的时候此属性不为空，表示属于哪个群组
@@ -80,12 +80,11 @@ public class File implements Serializable{
 		this.uploadTime = uploadTime;
 	}
 	
-	@Enumerated
 	@Column(nullable = false)
-	public Enum<FileType> getFiletype() {
+	public String getFiletype() {
 		return filetype;
 	}
-	public void setFiletype(Enum<FileType> filetype) {
+	public void setFiletype(String filetype) {
 		this.filetype = filetype;
 	}
 	

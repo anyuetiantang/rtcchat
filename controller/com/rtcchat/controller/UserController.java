@@ -3,6 +3,7 @@ package com.rtcchat.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,22 +22,18 @@ public class UserController extends BaseController {
 	private UserService userService;
 
 	@ResponseBody
-	@RequestMapping(value="/test",method=RequestMethod.POST)
+	@RequestMapping(value="/headModify",method=RequestMethod.POST)
 	public String test(
 			HttpServletRequest request, 
 			HttpServletResponse response
 			){
 		
-		User user = new User();
-		user.setId(1);
-		user.setUsername("cy");
-		user.setPassword("123");
-		user.setContact("1111");
+		HttpSession session = request.getSession();
+		System.out.println(session.getAttribute("headImg"));
+		session.setAttribute("headImg","/headImg/bg1");
+		System.out.println(session.getAttribute("headImg"));
 		
-		userService.save(user);
-		
-		return "";
-		
+		return "ok";
 	}
 	
 	@Resource(name="userService")

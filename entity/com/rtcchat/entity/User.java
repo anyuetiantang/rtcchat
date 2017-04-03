@@ -37,7 +37,7 @@ public class User implements Serializable {
 	private String username;//用户名
 	private String password;//密码
 	private String contact;//联系方式
-	private Blob headImg;//头像，以Blob格式存储在数据库中
+	private String headImg;//头像，以Blob格式存储在数据库中
 	private Set<Group> groupsCreated;//每个用户创建的群组
 	private Set<Group> groupsJoined;//每个用户加入的群组
 	private Set<User> friends;//每个用户的好友
@@ -60,7 +60,7 @@ public class User implements Serializable {
 		this.username = username;
 	}
 	
-	@Column(nullable=false,length=20)
+	@Column(nullable=false,length=100)
 	public String getPassword() {
 		return password;
 	}
@@ -77,10 +77,10 @@ public class User implements Serializable {
 	}
 
 	@Column(nullable=true)
-	public Blob getHeadImg() {
+	public String getHeadImg() {
 		return headImg;
 	}
-	public void setHeadImg(Blob headImg) {
+	public void setHeadImg(String headImg) {
 		this.headImg = headImg;
 	}
 	

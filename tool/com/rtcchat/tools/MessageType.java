@@ -7,13 +7,20 @@ package com.rtcchat.tools;
  */
 
 public enum MessageType {
-	read,noread;
+	MESSAGE_TYPE_READ("read"),
+	MESSAGE_TYPE_NOREAD("noread");
 	
-	public MessageType getRead(){
-		return MessageType.read;
+	private String type;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
-	public MessageType getNoread(){
-		return MessageType.noread;
+	private MessageType(String type){
+		this.type = type;
 	}
 }

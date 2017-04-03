@@ -7,13 +7,20 @@ package com.rtcchat.tools;
  */
 
 public enum FileType {
-	user,group;
+	FILE_TYPE_USER("user"),
+	FILE_TYPE_GROUP("group");
 	
-	public FileType getUser(){
-		return FileType.user;
+	private String type;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
-	public FileType getGroup(){
-		return FileType.group;
+	private FileType(String type){
+		this.type = type;
 	}
 }

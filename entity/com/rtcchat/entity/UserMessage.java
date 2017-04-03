@@ -37,7 +37,7 @@ public class UserMessage {
 	private User fromUser;//发送者
 	private User toUser;//接收者
 	private Date sendTime;//发送的时间
-	private Enum<MessageType> ifread;//是否被读取
+	private String ifread;//是否被读取
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -84,12 +84,11 @@ public class UserMessage {
 		this.sendTime = sendTime;
 	}
 	
-	@Enumerated
 	@Column(nullable = false)
-	public Enum<MessageType> getIfread() {
+	public String getIfread() {
 		return ifread;
 	}
-	public void setIfread(Enum<MessageType> ifread) {
+	public void setIfread(String ifread) {
 		this.ifread = ifread;
 	}
 }

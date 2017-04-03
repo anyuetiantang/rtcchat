@@ -10,5 +10,6 @@
 	<form action="<%=request.getContextPath() %>/user/test" method="post">
 		<input type="submit" value="提交">
 	</form>
+	<a href="<%=request.getContextPath() %>/start/toLogin">登录</a>
 </body>
 </html>

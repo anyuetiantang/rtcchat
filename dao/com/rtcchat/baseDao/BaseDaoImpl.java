@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository("baseDao")
 public class BaseDaoImpl implements BaseDao {
-	private HibernateTemplate hibernateTemplate = null;
-	private SessionFactory sessionFactory = null;
+	protected HibernateTemplate hibernateTemplate = null;
+	protected SessionFactory sessionFactory = null;
 	
 	@Override
 	public <T> List<T> findByExample(T t) {

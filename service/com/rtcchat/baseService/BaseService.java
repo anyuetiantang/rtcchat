@@ -20,4 +20,7 @@ public interface BaseService {
 	
 	//根据条件查询数据
 	public <T> List<T> findByCriteria(Criteria criteria);
+	
+	//查询数据
+	public <T> List<T> findByExample(T t);
 }

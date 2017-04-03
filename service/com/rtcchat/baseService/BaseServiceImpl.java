@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
 import com.rtcchat.baseDao.BaseDao;
@@ -12,6 +13,7 @@ import com.rtcchat.baseDao.BaseDao;
 @Service("baseService")
 public class BaseServiceImpl implements BaseService{
 	private BaseDao baseDao = null;
+	protected SessionFactory sessionFactory = null;
 	
 	@Override
 	public <T> void save(T t) {
@@ -39,10 +41,22 @@ public class BaseServiceImpl implements BaseService{
 		List<T> list = baseDao.findByCriteria(criteria);
 		return list;
 	}
+	
+	@Override
+	public <T> List<T> findByExample(T t) {
+		List<T> list = baseDao.findByExample(t);
+		return list;
+	}
 
 	
 	@Resource(name="baseDao")
 	public void setBaseDao(BaseDao baseDao) {
 		this.baseDao = baseDao;
 	}
+
+	@Resource(name="sessionFactory")
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
 }

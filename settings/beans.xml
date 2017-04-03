@@ -62,4 +62,36 @@
   	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
   		<property name="sessionFactory" ref="sessionFactory"></property>
   	</bean>
+  	
+  	
+  	<!-- 声明式事务管理配置 -->
+	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	     <property name="sessionFactory" ref="sessionFactory"/> 
+	</bean>
+  	<tx:advice id="txAdvice" transaction-manager="txManager">
+  		<tx:attributes>
+  			<!-- 指定对各个方法的不同属性 -->
+  			<tx:method name="*" propagation="REQUIRED"/>
+  		</tx:attributes>
+  	</tx:advice>
+  	<aop:config>
+  		<aop:pointcut id="point1"  expression="execution(public * com.rtcchat.serviceImpl.*.*(..))"/>
+  		<aop:advisor pointcut-ref="point1" advice-ref="txAdvice"/>
+  	</aop:config>
+  	
+  	<!-- 配置ajax返回中文 -->
+  	<bean  class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" > 
+        <property name="messageConverters"> 
+             <list> 
+                 <bean class = "org.springframework.http.converter.StringHttpMessageConverter"> 
+                    <property name = "supportedMediaTypes"> 
+                         <list> 
+                             <value>text/plain;charset=UTF-8</value> 
+                         </list> 
+                    </property> 
+                 </bean> 
+             </list> 
+        </property> 
+    </bean>
+  	
 </beans>
