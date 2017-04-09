@@ -5,6 +5,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 
 public interface BaseService {
+	//清除缓存
+	public void clear();
 
 	//添加数据
 	public <T> void save(T t);

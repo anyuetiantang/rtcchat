@@ -44,17 +44,19 @@ public class LoginController extends BaseController{
 	
 	@RequestMapping(value="/loginSuccess",method=RequestMethod.GET)
 	public String loginSuccess(
-			@RequestParam(value="username",required=true)String username,
+			@RequestParam(value="username",required=true)String usernameConfirm,
 			@RequestParam(value="random",required=true)String randomConfirm,
-			@RequestParam(value="remember",required=true)boolean remember,
+			@RequestParam(value="remember",required=false,defaultValue="false")boolean remember,
 			HttpServletRequest request, 
 			HttpServletResponse response
 			){
 		
 		HttpSession session = request.getSession();
+		String username = (String)session.getAttribute("username");
 		String random = (String)session.getAttribute("random");
-		if(random!=null && random.equals(randomConfirm)){
+		if(username!=null && username.equals(usernameConfirm) && random!=null && random.equals(randomConfirm)){
 			User user = userService.findByUsername(username);
+			session.setAttribute("userid", user.getId());
 			session.setAttribute("contact", user.getContact());
 			session.setAttribute("headImg", user.getHeadImg());
 			

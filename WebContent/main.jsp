@@ -7,14 +7,21 @@
 	<title>RTC Chat</title>
 	
 	<link href="<%=request.getContextPath() %>/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/bootstrap/fileinput.css" rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/bootstrap/font-awesome.css" rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/bootstrap/build.css" rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/main.css" rel="stylesheet">
 	
-	<script src="<%=request.getContextPath() %>/js/jquery/jquery-3.1.1.min.js"></script>
+	<script src="<%=request.getContextPath() %>/js/jquery/jquery.js"></script>
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.cookie.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/bootstrap.min.js"></script>
-	<script src="<%=request.getContextPath() %>/js/base.js"></script>
+	<script src="<%=request.getContextPath() %>/js/bootstrap/fileinput.js"></script>
 </head>
 <body>
+	<input id="myId" type="hidden" value="${sessionScope.userid }">
+	<input id="myUsername" type="hidden" value="${sessionScope.username }">
+	<input id="projectPath" type="hidden" value="<%=request.getContextPath() %>">
+
 	<div id="all">
 		<div id="top">
 			<div id="topContent" class="containner">
@@ -40,48 +47,75 @@
 				</div>
 				<div id="myGroups" style="margin-top: 30px;">
 					<div style="margin-bottom: 5px;font-size: 20px;font-weight: 500;">
-						My Groups
-						<button class="btn btn-default" style="border: 0px;width: 14px;height: 16px;"><span class="glyphicon glyphicon-plus"></span></button>
+						<label>My Groups</label>
+						<button data-toggle="modal" data-target="#myGroupModal" class="btn btn-default" style="border: 0px;float: right;margin-top: 5px;"><span class="glyphicon glyphicon-tasks"></span></button>
 					</div>
-					<ul style="list-style: none;margin: 0px;padding: 0px;overflow: auto;">
-					     <li>
-					     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
-								<div class="word-color">classmates</div>
-							</button>
-						</li>
-						<li>
-					     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
-								<div class="word-color">players</div>
-							</button>
-						</li>
+					<ul id="myGroupList" style="list-style: none;margin: 0px;padding: 0px;">
+<!-- 					     <li> -->
+<!-- 					     	<div style="width: 100%;"> -->
+<!-- 					     		<input type="hidden" value="1"> -->
+<!-- 						     	<button class="btn btn-default word-color" style="border: 0px;text-align: left;float: left;">classmates</button> -->
+<!-- 							   	<div style="width:20%;float: right;margin-top: 5px;"> -->
+<!-- 						     		<button class="btn btn-default" style="border: 0px;padding: 0px;"><span class="glyphicon glyphicon-plus"></span></button> -->
+<!-- 									<button class="btn btn-default" style="border: 0px;padding: 0px;"><span class="glyphicon glyphicon-minus"></span></button> -->
+<!-- 							    </div> -->
+<!-- 							</div> -->
+<!-- 						</li> -->
 					</ul>
 				</div>
 			</div>
 			<div id="center" class="col-md-3">
 				<div id="operation" class="part" style="text-align: right;">
-					<button class="btn btn-default" style="border: 0px;"><span class="glyphicon glyphicon-plus"></span>&nbsp;add</button>
-					<button class="btn btn-default" style="border: 0px;"><span class="glyphicon glyphicon-minus"></span>&nbsp;delete</button>
+					<button class="btn btn-default" data-toggle="modal" data-target="#friendAddOrGroupJoinModal" style="border: 0px;"><span class="glyphicon glyphicon-plus"></span>&nbsp;add</button>
+					<button class="btn btn-default" data-toggle="modal" data-target="#friendDeleteOrGroupExitModal" style="border: 0px;"><span class="glyphicon glyphicon-minus"></span>&nbsp;delete</button>
 				</div>
 				<div id="search" class="part">
 					<input type="text" class="form-control">
 				</div>
 				<div id="list" class="part" style="overflow: auto;">
-					<ul style="list-style: none;margin: 0px;padding: 0px;">
-						<li>
-					     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
-								<div class="word-color">
-									<img style="width: 25px;height: 25px;" src="<%=request.getContextPath()%>/images/head.jpg">&nbsp;
-									carlos
-								</div>
-							</button>
-							<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
-								<div class="word-color">
-									<img style="width: 25px;height: 25px;" src="<%=request.getContextPath()%>/images/head.jpg">&nbsp;
-									cy
-								</div>
-							</button>
-						</li>
+					<ul class="nav nav-tabs">
+					    <li class="active">
+					    	<input type="hidden" value="1">
+					    	<a href="#myFriendList" data-toggle="tab">我的好友</a>
+					    </li>
+					    <li>
+					    	<input type="hidden" value="2">
+					    	<a href="#myJoinedGroupList" data-toggle="tab">我加入的群组</a>
+					    </li>
 					</ul>
+					<div id="myFriendsAndJoinedGroupList" class="tab-content">
+					    <div class="tab-pane fade in active" id="myFriendList">
+							<ul id="myFriendListUl" style="list-style: none;margin: 0px;padding: 0px;">
+<!-- 								<li> -->
+<!-- 									<input type="hidden" value="1"> -->
+<!-- 							     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;"> -->
+<!-- 										<div class="word-color"> -->
+<%-- 											<img style="width: 25px;height: 25px;" src="<%=request.getContextPath()%>/images/head.jpg">&nbsp; --%>
+<!-- 											carlos -->
+<!-- 										</div> -->
+<!-- 									</button> -->
+<!-- 								</li> -->
+							</ul>
+					    </div>
+					    <div class="tab-pane fade" id="myJoinedGroupList">
+					    	<ul id="myJoinedGroupListUl" style="list-style: none;margin: 0px;padding: 0px;">
+								<li>
+							     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
+										<div class="word-color">
+											JoinedGroup1
+										</div>
+									</button>
+								</li>
+								<li>
+									<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
+										<div class="word-color">
+											JoinedGroup2
+										</div>
+									</button>
+								</li>
+							</ul>
+					    </div>
+					</div>
 				</div>
 			</div>
 			<div id="right" class="col-md-6">
@@ -97,6 +131,13 @@
 	</div>
 
 	<%@ include file="userInfoModify.jsp" %>
+	<%@ include file="myGroup.jsp" %>
+	<%@ include file="friendAddOrGroupJoin.jsp" %>
+	<%@ include file="friendDeleteOrGroupExit.jsp" %>
 
 </body>
+
+<script src="<%=request.getContextPath() %>/js/base.js"></script>
+<script src="<%=request.getContextPath() %>/js/websocket.js"></script>
+<script src="<%=request.getContextPath() %>/js/main.js"></script>
 </html>

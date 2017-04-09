@@ -25,6 +25,7 @@ import com.rtcchat.tools.MessageType;
 @Entity
 @Table(name="user_message")
 public class UserMessage {
+	public static final String FIELD_OBJECTNAME = "UserMessage";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_TEXT = "text";
 	public static final String FIELD_FROMUSER = "fromUser";

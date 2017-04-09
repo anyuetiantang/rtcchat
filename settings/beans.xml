@@ -19,7 +19,7 @@
     <!-- 自动扫描包下的控制器 -->
     <context:component-scan base-package="com.rtcchat" />
     <!-- 使用aop -->
-    <aop:aspectj-autoproxy />
+    <aop:aspectj-autoproxy proxy-target-class="true"/> 
 
     <!-- 配置controller返回值指定的路径 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -92,6 +92,13 @@
                  </bean> 
              </list> 
         </property> 
+    </bean>
+  	
+  	<!-- 文件上传 -->
+  	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  		<!-- 文件大小不能超过100M -->
+        <property name="maxUploadSize" value="102400000"/>
+        <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
   	
 </beans>

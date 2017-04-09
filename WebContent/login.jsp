@@ -9,11 +9,9 @@
 	<link href="<%=request.getContextPath() %>/css/bootstrap/bootstrap.min.css" rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/login.css" rel="stylesheet">
 
-	<script src="<%=request.getContextPath() %>/js/jquery/jquery-3.1.1.min.js"></script>
+	<script src="<%=request.getContextPath() %>/js/jquery/jquery.js"></script>
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.cookie.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/bootstrap.min.js"></script>
-	<script src="<%=request.getContextPath() %>/js/base.js"></script>
-	<script src="<%=request.getContextPath() %>/js/login.js"></script>
 </head>
 <body>
 	<input id="projectPath" type="hidden" value="<%=request.getContextPath() %>">
@@ -51,4 +49,7 @@
 	
 	<%@ include file="register.jsp" %>
 </body>
+
+<script src="<%=request.getContextPath() %>/js/base.js"></script>
+<script src="<%=request.getContextPath() %>/js/login.js"></script>
 </html>

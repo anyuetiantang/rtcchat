@@ -2,10 +2,11 @@ package com.rtcchat.baseController;
 
 import javax.annotation.Resource;
 
-import com.rtcchat.baseService.BaseServiceImpl;
+import com.rtcchat.service.UserService;
+import com.rtcchat.serviceImpl.BaseServiceImpl;
 
 public class BaseController {
-	private BaseServiceImpl baseService;
+	protected BaseServiceImpl baseService = null;
 	
 	@Resource(name="baseService")
 	public void setBaseService(BaseServiceImpl baseService) {

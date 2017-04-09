@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="group_message")
 public class GroupMessage {
+	public static final String FIELD_OBJECTNAME = "GroupMessage";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_TEXT = "text";
 	public static final String FIELD_BELONGTOGROUP = "belongToGroup";

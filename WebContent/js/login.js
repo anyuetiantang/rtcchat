@@ -45,12 +45,12 @@ $(function(){
 			username : username,
 			password : password,
 		},function(res){
-			var data = JSON.parse(res);
-			console.log(data);
-			if(data.code === "200"){
-				window.location.href = $("#projectPath").val()+"/start/loginSuccess?random="+data.random+"&username="+username+"&remember="+remember;
+			var dataRes = JSON.parse(res);
+			console.log(dataRes);
+			if(dataRes.code === "200"){
+				window.location.href = $("#projectPath").val()+"/start/loginSuccess?random="+dataRes.random+"&username="+username+"&remember="+remember;
 			}else{
-				alert(data.msg);
+				alert(dataRes.msg);
 			}
 		});
 //			$("#loginForm").submit();
@@ -79,12 +79,12 @@ $(function(){
 			password : password,
 			contact : contact
 		},function(res){
-			var data = JSON.parse(res);
-			if(data.code === "200"){
+			var dataRes = JSON.parse(res);
+			if(dataRes.code === "200"){
 				alert("注册成功");
 				$("#myModal").modal("hide");
 			}else{
-				alert(data.msg);
+				alert(dataRes.msg);
 			}
 		});
 		

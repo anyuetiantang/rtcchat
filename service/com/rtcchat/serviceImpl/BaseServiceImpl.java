@@ -1,4 +1,4 @@
-package com.rtcchat.baseService;
+package com.rtcchat.serviceImpl;
 
 import java.util.List;
 
@@ -9,11 +9,17 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
 import com.rtcchat.baseDao.BaseDao;
+import com.rtcchat.baseService.BaseService;
 
 @Service("baseService")
 public class BaseServiceImpl implements BaseService{
 	private BaseDao baseDao = null;
 	protected SessionFactory sessionFactory = null;
+	
+	@Override
+	public void clear() {
+		baseDao.clear();
+	}
 	
 	@Override
 	public <T> void save(T t) {

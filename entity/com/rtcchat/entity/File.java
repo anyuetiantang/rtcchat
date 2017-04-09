@@ -26,6 +26,7 @@ import com.rtcchat.tools.FileType;
 @Entity
 @Table(name="file")
 public class File implements Serializable{
+	public static final String FIELD_OBJECTNAME = "File";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_FILENAME = "filename";
 	public static final String FIELD_FILEPATH = "filepath";

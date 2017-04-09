@@ -17,10 +17,12 @@
 				  </div>
 				  <div class="form-group">
             		<label for="passwordRegister">密码：</label>
-					<input type="password" class="form-control" id="passwordRegister" name="passwordRegister"  placeholder="password" required />				  </div>
+					<input type="password" class="form-control" id="passwordRegister" name="passwordRegister"  placeholder="password" required />				  
+				  </div>
 				  <div class="form-group">
             		<label for="passwordConfirm">确认密码：</label>
-					<input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm"  placeholder="password confirmed" required />				  </div>
+					<input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm"  placeholder="password confirmed" required />				  
+				  </div>
 				  <div class="form-group">
             		<label for="contactRegister">联系方式：</label>
             		<input type="text" class="form-control" id="contactRegister" name="contactRegister" placeholder="contact" required />

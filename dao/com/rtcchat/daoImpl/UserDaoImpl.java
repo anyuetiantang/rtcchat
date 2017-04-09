@@ -6,7 +6,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.rtcchat.baseDao.BaseDaoImpl;
 import com.rtcchat.dao.UserDao;
 import com.rtcchat.entity.User;
 

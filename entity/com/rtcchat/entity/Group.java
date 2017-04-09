@@ -21,8 +21,9 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name="group")
+@Table(name="groups")
 public class Group implements Serializable{
+	public static final String FIELD_OBJECTNAME = "Group";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_GROUPNAME = "groupname";
 	public static final String FIELD_CREATOR = "creator";

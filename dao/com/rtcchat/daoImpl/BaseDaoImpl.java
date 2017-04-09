@@ -1,4 +1,4 @@
-package com.rtcchat.baseDao;
+package com.rtcchat.daoImpl;
 
 import java.util.List;
 
@@ -10,14 +10,21 @@ import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.rtcchat.baseDao.BaseDao;
+
 @Repository("baseDao")
 public class BaseDaoImpl implements BaseDao {
 	protected HibernateTemplate hibernateTemplate = null;
 	protected SessionFactory sessionFactory = null;
 	
 	@Override
+	public void clear() {
+		hibernateTemplate.clear();
+	}
+	
+	@Override
 	public <T> List<T> findByExample(T t) {
-		return hibernateTemplate.findByExample(t);
+		return (List<T>)hibernateTemplate.findByExample(t);
 	}
 
 	@Override
@@ -33,6 +40,12 @@ public class BaseDaoImpl implements BaseDao {
 	}
 
 	@Override
+	public <T> List<T> findByHql(Class<T> clazz, String hql) {
+		List<T> list = sessionFactory.getCurrentSession().createQuery(hql).list();
+		return list;
+	}
+	
+	@Override
 	public <T> void save(T t) {
 		hibernateTemplate.save(t);
 	}
@@ -46,6 +59,11 @@ public class BaseDaoImpl implements BaseDao {
 	@Override
 	public <T> void update(T t) {
 		hibernateTemplate.update(t);
+	}
+	
+	@Override
+	public <T> void merge(T t) {
+		hibernateTemplate.merge(t);
 	}
 
 	/******************* Ù–‘get∑Ω∑®********************/

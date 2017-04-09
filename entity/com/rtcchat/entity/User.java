@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,8 +25,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name="user")
 public class User implements Serializable {
+	public static final String FIELD_OBJECTNAME = "User";
 	public static final String FIELD_ID = "id";
-	public static final String FIELD_USERNAME = "usermname";
+	public static final String FIELD_USERNAME = "username";
 	public static final String FIELD_PASSWORD = "password";
 	public static final String FIELD_CONTACT = "contact";
 	public static final String FIELD_HEADIMG = "headImg";
