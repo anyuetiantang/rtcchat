@@ -24,7 +24,9 @@
 						 </ul>
 				    </div>
 				    <div class="tab-pane fade" id="groupExit">
-				    	this is group exit
+				    	<ul id="groupExitList" style="list-style: none;margin: 0px;padding: 0px;">
+						 	
+						</ul>
 				    </div>
 				</div>
             </div>
@@ -38,10 +40,11 @@
     $('#friendDeleteOrGroupExitModal').on('shown.bs.modal', function () {
     	if(myFriends){
     		loadFriendDeleteList(myFriends);
+    		loadGroupExitList(groupsJoined);
     	}
     })
     
-    	//用于根据user数组生成用户添加好友的搜索列表
+    	//用于根据user数组生成用户删除好友的搜索列表
     	function loadFriendDeleteList(userList){
     		var friendDeleteListHtml = "";
     		var projectPath = $("#projectPath").val();
@@ -49,8 +52,8 @@
     			friendDeleteListHtml += 	
 					 "<li>"+
 		                "<div class=\"checkbox checkbox-primary\">"+
-		                    "<input type=\"radio\" name=\"friendAddList\" id=\"radio" + userList[i].id +"\" value=\""+userList[i].id+"\">"+
-		                    "<label for=\"radio" + userList[i].id +"\" style=\"width:100%;border: 0px;text-align: left;\">"+
+		                    "<input type=\"radio\" name=\"friendDeleteList\" id=\"friendDeleteRadio" + userList[i].id +"\" value=\""+userList[i].id+"\">"+
+		                    "<label for=\"friendDeleteRadio" + userList[i].id +"\" style=\"width:100%;border: 0px;text-align: left;\">"+
 								"<div class=\"word-color btn btn-default\" style=\"width:100%;border: 0px;text-align: left;\">"+
 									"<img style=\"width: 25px;height: 25px;\" src=\""+ projectPath + userList[i].headImg +"\">&nbsp;"+
 									userList[i].username + 
@@ -59,9 +62,29 @@
 		                "</div>"+
 					 "</li>";
 					 
-				$("#friendDeleteList").empty();
-				$("#friendDeleteList").append(friendDeleteListHtml);
     		}
+			$("#friendDeleteList").empty();
+			$("#friendDeleteList").append(friendDeleteListHtml);
+    	}
+    
+    	//用于根据group数组生成用户退出群组列表
+    	function loadGroupExitList(groupsJoined){
+    		var groupExitListHtml = "";
+    		for(var i=0;i<groupsJoined.length;i++){
+    			groupExitListHtml += 
+					 "<li>"+
+		                "<div class=\"checkbox checkbox-primary\">"+
+		                    "<input type=\"radio\" name=\"groupExitList\" id=\"groupExitRadio" + groupsJoined[i].id +"\" value=\""+groupsJoined[i].id+"\">"+
+		                    "<label for=\"groupExitRadio" + groupsJoined[i].id +"\" style=\"width:100%;border: 0px;text-align: left;\">"+
+								"<div class=\"word-color btn btn-default\" style=\"width:100%;border: 0px;text-align: left;\">"+
+									groupsJoined[i].groupname + "("+groupsJoined[i].creator.username+")"
+								"</div>"+
+		                    "</label>"+
+		                "</div>"+
+					 "</li>";
+    		}
+			$("#groupExitList").empty();
+			$("#groupExitList").append(groupExitListHtml);
     	}
     	
     	$("#friendDeleteOrGroupExitSubmit").click(function(){
@@ -81,7 +104,19 @@
     			var socketDataStr = JSON.stringify(socketData);
     			sendMessage(socketDataStr);
     		}else if(tag == 2){
-    			cobsole.log(2);
+    			var groupId = parseInt($("input[name='groupExitList']:checked").val());
+    			var myId = ${sessionScope.userid};
+    			if(!groupId){
+    				return;
+    			}
+    			
+    			var socketData = {
+    					type : "groupUserExit",
+    					sourceId : myId,
+    					groupId : groupId
+    			}
+    			var socketDataStr = JSON.stringify(socketData);
+    			sendMessage(socketDataStr);
     		}
     	});
     </script>

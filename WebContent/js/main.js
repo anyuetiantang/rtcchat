@@ -4,11 +4,13 @@ var groupsJoined = null;
 var myId = $("#myId").val();
 var myUsername = $("#myUsername").val();
 var projectPath = $("#projectPath").val();
+var groupSelectedId = null;
 
 //获取用户的创建群组、好友以及加入群组，并且使用回调函数进行初始化
 getMyGroupsAndFriends(true,true,true,function(){
 	initMyGroups();
 	initMyFriends();
+	initMyGroupsJoined();
 });
 
 //初始化websocket
@@ -25,6 +27,7 @@ function getMyGroupsAndFriends(ifGetMyGroups,ifGetMyFriends,ifGetJoinedGroups,ca
 	ajaxRequest(url,data,function(res){
 		var dataRes = JSON.parse(res);
 		if(dataRes.code === "200"){
+			console.log(dataRes);
 			if(ifGetMyGroups){
 				groupsCreated = dataRes.groupsCreated;
 			}
@@ -42,17 +45,16 @@ function getMyGroupsAndFriends(ifGetMyGroups,ifGetMyFriends,ifGetJoinedGroups,ca
 	});
 }
 
-//初始化我的群组
+//初始化我的群组列表
 function initMyGroups(){
 	var myGroupHtml = "";
 	for(var i=0;i<groupsCreated.length;i++){
 		myGroupHtml += 	"<li class=\"containner\">"+ 
 							"<div style=\"width: 100%;\">"+
-								"<input type=\"hidden\" value=\""+groupsCreated[i].id+"\">"+
 								"<button class=\"btn btn-default word-color col-md-8\" style=\"border: 0px;text-align: left;\">"+groupsCreated[i].groupname+"</button>"+
 								"<span class=\"col-md-4\" style=\"margin-top: 5px;\">"+
-									"<button class=\"btn btn-default\" style=\"border: 0px;padding: 0px;\"><span class=\"glyphicon glyphicon-plus\"></span></button>"+
-									"<button class=\"btn btn-default\" style=\"border: 0px;padding: 0px;\"><span class=\"glyphicon glyphicon-minus\"></span></button>"
+									"<input type=\"hidden\" value=\""+groupsCreated[i].id+"\">"+
+									"<button onclick=\"getGroupSelectedId("+groupsCreated[i].id+")\" data-toggle=\"modal\" data-target=\"#groupUserAddOrDeleteModal\" class=\"btn btn-default\" style=\"border: 0px;\"><span class=\"glyphicon glyphicon-tasks\"></span></button>"+
 								"</span>"+
 							"</div>"+
 						"</li>";
@@ -61,6 +63,7 @@ function initMyGroups(){
 	$("#myGroupList").append(myGroupHtml);
 }
 
+//初始化我的好友列表
 function initMyFriends(){
 	var myFriendHtml = "";
 	for(var i=0;i<myFriends.length;i++){
@@ -77,3 +80,21 @@ function initMyFriends(){
 	$("#myFriendListUl").empty();
 	$("#myFriendListUl").append(myFriendHtml);
 }
+
+//初始化我加入的群组列表
+function initMyGroupsJoined(){
+	var myGroupJoinedHtml = "";
+	for(var i=0;i<groupsJoined.length;i++){
+		myGroupJoinedHtml += 	"<li class=\"containner\">"+ 
+									"<div style=\"width: 100%;\">"+
+										"<button class=\"btn btn-default word-color col-md-12\" style=\"border: 0px;text-align: left;\">"+
+											groupsJoined[i].groupname+"("+groupsJoined[i].creator.username+")"+
+										"</button>"+
+									"</div>"+
+								"</li>";
+	}
+	$("#myJoinedGroupListUl").empty();
+	$("#myJoinedGroupListUl").append(myGroupJoinedHtml);
+	
+}
+

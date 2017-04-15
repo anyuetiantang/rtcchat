@@ -48,7 +48,7 @@
 				<div id="myGroups" style="margin-top: 30px;">
 					<div style="margin-bottom: 5px;font-size: 20px;font-weight: 500;">
 						<label>My Groups</label>
-						<button data-toggle="modal" data-target="#myGroupModal" class="btn btn-default" style="border: 0px;float: right;margin-top: 5px;"><span class="glyphicon glyphicon-tasks"></span></button>
+						<button onclick="initMyGroupsToDelete()" data-toggle="modal" data-target="#myGroupModal" class="btn btn-default" style="border: 0px;float: right;margin-top: 5px;"><span class="glyphicon glyphicon-tasks"></span></button>
 					</div>
 					<ul id="myGroupList" style="list-style: none;margin: 0px;padding: 0px;">
 <!-- 					     <li> -->
@@ -134,6 +134,7 @@
 	<%@ include file="myGroup.jsp" %>
 	<%@ include file="friendAddOrGroupJoin.jsp" %>
 	<%@ include file="friendDeleteOrGroupExit.jsp" %>
+	<%@ include file="GroupUserAddOrDelete.jsp" %>
 
 </body>
 

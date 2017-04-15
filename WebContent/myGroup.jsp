@@ -26,7 +26,18 @@
 						</form>
 				    </div>
 				    <div class="tab-pane fade" id="groupDeleted">
-				    	删除群组
+				    	<ul id="groupDeletedList" style="list-style: none;margin: 0px;padding: 0px;">
+<!-- 							 <li> -->
+<!-- 			                    <div class="checkbox checkbox-primary"> -->
+<!-- 			                        <input type="radio" name="radio4" id="radio7" value="option1"> -->
+<!-- 			                        <label for="radio7" style="width:100%;border: 0px;text-align: left;"> -->
+<!-- 										<div class="word-color btn btn-default" style="width:100%;border: 0px;text-align: left;"> -->
+<!-- 											friends -->
+<!-- 										</div> -->
+<!-- 			                        </label> -->
+<!-- 			                    </div> -->
+<!-- 							 </li> -->
+						 </ul>
 				    </div>
 				</div>
             </div>
@@ -38,6 +49,28 @@
     </div><!-- /.modal -->
     
     <script>
+	
+		function initMyGroupsToDelete(){
+			var groupDeletedListHtml = "";
+			var projectPath = $("#projectPath").val();
+			for(var i=0;i<groupsCreated.length;i++){
+				groupDeletedListHtml += 	
+					 "<li>"+
+		                "<div class=\"checkbox checkbox-primary\">"+
+		                    "<input type=\"radio\" name=\"groupDeletedList\" id=\"groupDeletedRadio" + groupsCreated[i].id +"\" value=\""+groupsCreated[i].id+"\">"+
+		                    "<label for=\"groupDeletedRadio" + groupsCreated[i].id +"\" style=\"width:100%;border: 0px;text-align: left;\">"+
+								"<div class=\"word-color btn btn-default\" style=\"width:100%;border: 0px;text-align: left;\">"+
+									groupsCreated[i].groupname + 
+								"</div>"+
+		                    "</label>"+
+		                "</div>"+
+					 "</li>";
+					 
+			}
+			$("#groupDeletedList").empty();
+			$("#groupDeletedList").append(groupDeletedListHtml);
+		}
+    
     	$("#myGroupRequest").click(function(){
     		var tag = $(".myGroupTab.active")[0].childNodes[1].value;
     		if(tag == 1){
@@ -70,8 +103,28 @@
     	   		});
     			
     		}else if(tag == 2){
+    			var groupId = parseInt($("input[name='groupDeletedList']:checked").val());
+    			var myId = ${sessionScope.userid};
+    			
+    			var url = $("#projectPath").val()+"/group/delete";
+    			var data = {
+    					groupId : groupId
+    			}
+    			ajaxRequest(url,data,function(res){
+        			var dataRes = JSON.parse(res);
+        			if(dataRes.code === "200"){
+        				getMyGroupsAndFriends(true,false,false,function(){
+        					initMyGroups();
+        					$("#myGroupModal").modal("hide");
+        					alert("删除群组成功");
+        				});
+        			}else{
+        				alert(dataRes.msg);
+        			}
+    			});
     			
     		}
     	});
+    	
     </script>
 </div>

@@ -129,7 +129,7 @@ public class UserController extends BaseController {
 	public String findGroupsCreated(
 			@RequestParam(value="ifGetMyGroups",required=false,defaultValue="false") boolean ifGetMyGroups,
 			@RequestParam(value="ifGetMyFriends",required=false,defaultValue="false") boolean ifGetMyFriends,
-			@RequestParam(value="ifGetJoinedFriends",required=false,defaultValue="false") boolean ifGetJoinedGroups,
+			@RequestParam(value="ifGetJoinedGroups",required=false,defaultValue="false") boolean ifGetJoinedGroups,
 			HttpServletRequest request, 
 			HttpServletResponse response
 			) throws IllegalStateException, IOException{
@@ -140,8 +140,8 @@ public class UserController extends BaseController {
 		
 		try {
 			if(ifGetMyGroups){
-				List<Group> groupList = userService.findGroupCreated(userid);
-				map.put("groupsCreated", groupList);
+				Set<Group> groupSet = userService.findGroupCreated(userid);
+				map.put("groupsCreated", groupSet);
 			}
 			
 			if(ifGetMyFriends){
@@ -150,7 +150,8 @@ public class UserController extends BaseController {
 			}
 			
 			if(ifGetJoinedGroups){
-				
+				Set<Group> groupSet = userService.findGroupJoined(userid);
+				map.put("groupsJoined", groupSet);
 			}
 			
 			map.put("code", ErrorType.ERROR_SUCCESS.getCode());

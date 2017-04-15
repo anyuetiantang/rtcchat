@@ -35,7 +35,10 @@ public interface UserService extends BaseService {
 	public ErrorType updatePassword(int userid,String passwordOld,String passwordNew);
 	
 	//获取所有指定用户创建的群组
-	public List<Group> findGroupCreated(int userid);
+	public Set<Group> findGroupCreated(int userid);
+	
+	//获取所有指定用户加入的群组
+	public Set<Group> findGroupJoined(int userid);
 	
 	//获取某用户的好友
 	public Set<User> findFriendById(int userId);
@@ -48,4 +51,5 @@ public interface UserService extends BaseService {
 	
 	//删除好友
 	public ErrorType friendDelete(int userId,int targetId);
+	
 }

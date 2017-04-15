@@ -40,7 +40,24 @@
 						 </ul>
 				    </div>
 				    <div class="tab-pane fade" id="groupJoin">
-				    	this is group join
+				    	 <div class="input-group col-md-12" style="margin-top:0px positon:relative"> 
+					    	<input id="groupSearchInput" type="text" class="form-control"placeholder="请输入字段名" / >  
+				            <span class="input-group-btn">
+				               <button id="groupSearchButton" class="btn btn-info btn-search">search</button>  
+				            </span>  
+						 </div> 
+						 <ul id="groupJoinList" style="list-style: none;margin: 0px;padding: 0px;">
+<!-- 							 <li> -->
+<!-- 			                    <div class="checkbox checkbox-primary"> -->
+<!-- 			                        <input type="radio" name="radio4" id="radio7" value="option1"> -->
+<!-- 			                        <label for="radio7" style="width:100%;border: 0px;text-align: left;"> -->
+<!-- 										<div class="word-color btn btn-default" style="width:100%;border: 0px;text-align: left;"> -->
+<!-- 											cy -->
+<!-- 										</div> -->
+<!-- 			                        </label> -->
+<!-- 			                    </div> -->
+<!-- 							 </li> -->
+						 </ul>
 				    </div>
 				</div>
             </div>
@@ -69,6 +86,24 @@
     		});
     	});
     	
+    	$("#groupSearchButton").click(function(){
+    		var targetStr = $("#groupSearchInput").val();
+    		var data = {
+    				targetStr : targetStr
+    		}
+    		var url = $("#projectPath").val()+"/group/fuzzySearch";
+    		ajaxRequest(url,data,function(res){
+    			var dataRes = JSON.parse(res);
+    			if(dataRes.code === "200"){
+    				console.log(dataRes.groupList);
+    				loadGroupJoinList(dataRes.groupList);
+    			}else{
+    				$("#groupJoinList").empty();
+    				alert(dataRes.msg);
+    			}
+    		});
+    	});
+    	
     	//用于根据user数组生成用户添加好友的搜索列表
     	function loadFriendAddList(userList){
     		var friendAddListHtml = "";
@@ -77,8 +112,8 @@
     			friendAddListHtml += 	
 					 "<li>"+
 		                "<div class=\"checkbox checkbox-primary\">"+
-		                    "<input type=\"radio\" name=\"friendAddList\" id=\"radio" + userList[i].id +"\" value=\""+userList[i].id+"\">"+
-		                    "<label for=\"radio" + userList[i].id +"\" style=\"width:100%;border: 0px;text-align: left;\">"+
+		                    "<input type=\"radio\" name=\"friendAddList\" id=\"friendAddRadio" + userList[i].id +"\" value=\""+userList[i].id+"\">"+
+		                    "<label for=\"friendAddRadio" + userList[i].id +"\" style=\"width:100%;border: 0px;text-align: left;\">"+
 								"<div class=\"word-color btn btn-default\" style=\"width:100%;border: 0px;text-align: left;\">"+
 									"<img style=\"width: 25px;height: 25px;\" src=\""+ projectPath + userList[i].headImg +"\">&nbsp;"+
 									userList[i].username + 
@@ -87,9 +122,29 @@
 		                "</div>"+
 					 "</li>";
 					 
-				$("#friendAddList").empty();
-				$("#friendAddList").append(friendAddListHtml);
     		}
+			$("#friendAddList").empty();
+			$("#friendAddList").append(friendAddListHtml);
+    	}
+    	
+    	//用于根据group数组生成用户加入群组的搜索列表
+    	function loadGroupJoinList(groupList){
+    		var groupJoinListHtml = "";
+    		for(var i=0;i<groupList.length;i++){
+    			groupJoinListHtml +=
+					"<li>"+
+		                "<div class=\"checkbox checkbox-primary\">"+
+		                    "<input type=\"radio\" name=\"groupJoinList\" id=\"groupJoinRadio"+groupList[i].id+"\" value=\""+groupList[i].id+"\">"+
+		                    "<label for=\"groupJoinRadio"+groupList[i].id+"\" style=\"width:100%;border: 0px;text-align: left;\">"+
+								"<div class=\"word-color btn btn-default\" style=\"width:100%;border: 0px;text-align: left;\">"+
+									groupList[i].groupname+"("+groupList[i].creator.username+")"+
+								"</div>"+
+		                    "</label>"+
+		                "</div>"+
+					 "</li>";
+    		}
+			$("#groupJoinList").empty();
+			$("#groupJoinList").append(groupJoinListHtml);
     	}
     	
     	$("#friendAddOrGroupJoinSubmit").click(function(){
@@ -113,7 +168,15 @@
     			sendMessage(socketDataStr);
     			
     		}else if(tag == 2){
-    			
+    			var groupId = parseInt($("input[name='groupJoinList']:checked").val());
+    			var myId = ${sessionScope.userid};
+    			var socketData = {
+    					type : "groupJoinReqFromUser",
+    					sourceId : myId,
+    					groupId : groupId
+    			}
+    			var socketDataStr = JSON.stringify(socketData);
+    			sendMessage(socketDataStr);
     		}
     	});
     </script>

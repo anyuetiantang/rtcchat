@@ -93,18 +93,33 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<Group> findGroupCreated(int userid) {
+	public Set<Group> findGroupCreated(int userid) {
 		User user = userDao.findById(User.class, userid);
-		Group group = new Group();
-		group.setCreator(user);
-		List<Group> groupList= groupDao.findByExample(group);
-		//避免延迟加载带来的exception（session已关闭无法获取数据）
-		for(Group g : groupList){
+		Set<Group> groupSet = user.getGroupsCreated();
+		System.out.println(groupSet.size());
+		userDao.clear();
+		for(Group g : groupSet){
 			g.setCreator(null);
 			g.setMembers(null); 
 		}
 		
-		return groupList;
+		return groupSet;
+	}
+	
+	@Override
+	public Set<Group> findGroupJoined(int userid) {
+		User user = userDao.findById(User.class, userid);
+		Set<Group> groupSet = user.getGroupsJoined();
+		System.out.println(groupSet.size());
+		userDao.clear();
+		for(Group group : groupSet){
+			group.setMembers(null);
+			group.getCreator().setPassword("");
+			group.getCreator().setFriends(null);
+			group.getCreator().setGroupsCreated(null);
+			group.getCreator().setGroupsJoined(null);
+		}
+		return groupSet;
 	}
 	
 	@Override
@@ -200,5 +215,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	public void setGroupDao(GroupDao groupDao) {
 		this.groupDao = groupDao;
 	}
+
 
 }
