@@ -18,6 +18,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.rtcchat.entity.Group;
 import com.rtcchat.entity.User;
 import com.rtcchat.service.GroupService;
+import com.rtcchat.service.MessageService;
 import com.rtcchat.service.UserService;
 import com.rtcchat.tools.ApplicationContextRegister;
 import com.rtcchat.tools.ErrorType;
@@ -36,6 +37,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	public void onMessage(String jsonMessage) throws IOException {
 		UserService userService = (UserService)ApplicationContextRegister.getApplicationContext().getBean("userService");
 		GroupService groupService = (GroupService)ApplicationContextRegister.getApplicationContext().getBean("groupService");
+		MessageService messageService = (MessageService)ApplicationContextRegister.getApplicationContext().getBean("messageService");
 		
 		JSONObject jsonObjInput = JSONObject.fromObject(jsonMessage);
 		String type = jsonObjInput.getString("type");
@@ -59,6 +61,8 @@ public class WebSocketController extends TextWebSocketHandler{
 			groupJoinResFromUser(userService,groupService,jsonObjInput,jsonMessage);
 		}else if(type.equals(WebSocketMsgType.GROUP_USER_EXIT.getSocketType())){
 			groupUserExit(userService,groupService,jsonObjInput);
+		}else if(type.equals(WebSocketMsgType.MESSAGE_USER.getSocketType())){
+			sendUserMessage(userService,messageService,jsonObjInput);
 		}
 		
 	}
@@ -127,7 +131,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//用户删除好友请求
-	public void friendDeleteReq(UserService userService,JSONObject jsonObjInput) throws IOException{
+	private void friendDeleteReq(UserService userService,JSONObject jsonObjInput) throws IOException{
 		Map<String,String> map = new HashMap<String,String>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int targetId = jsonObjInput.getInt("targetId");
@@ -228,7 +232,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//群组用户删除
-	public void groupUserDelete(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException{
+	private void groupUserDelete(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException{
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int targetId = jsonObjInput.getInt("targetId");
@@ -263,7 +267,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//用户申请加入某群组的请求
-	public void groupJoinReqFromUser(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException {
+	private void groupJoinReqFromUser(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException {
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int groupId = jsonObjInput.getInt("groupId");
@@ -314,7 +318,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//用户申请加入某群组的回复
-	public void groupJoinResFromUser(UserService userService,GroupService groupService,JSONObject jsonObjInput,String jsonMessage) throws IOException{
+	private void groupJoinResFromUser(UserService userService,GroupService groupService,JSONObject jsonObjInput,String jsonMessage) throws IOException{
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int targetId = jsonObjInput.getInt("targetId");
@@ -341,7 +345,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//用户退出群组
-	public void groupUserExit(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException{
+	private void groupUserExit(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException{
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int groupId = jsonObjInput.getInt("groupId");
@@ -370,6 +374,32 @@ public class WebSocketController extends TextWebSocketHandler{
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			sessionSource.getBasicRemote().sendText(jsonObjOutput.toString());
 		}
+	}
+	
+	//私聊信息
+	public void sendUserMessage(UserService userService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
+		Map<String,Object> map = new HashMap<String,Object>();
+		int sourceId = jsonObjInput.getInt("sourceId");
+		int targetId = jsonObjInput.getInt("targetId");
+		String text = jsonObjInput.getString("text");
+		
+		Session sessionTarget = Storage.socketMap.get(targetId);
+		if(sessionTarget == null){
+			map.put("type",WebSocketMsgType.ERROR.getSocketType());
+			map.put("msg", "该用户不在线，当他上线会收到你的信息");
+			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+			session.getBasicRemote().sendText(jsonObjOutput.toString());
+			
+			//用户不在线，将消息放入历史消息
+		}else{
+			map.put("type", WebSocketMsgType.MESSAGE_USER.getSocketType());
+			map.put("sourceId", sourceId);
+			map.put("targetId", targetId);
+			map.put("text", text);
+			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+			sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
+		}
+		
 	}
 	
 	

@@ -10,12 +10,15 @@
 	<link href="<%=request.getContextPath() %>/css/bootstrap/fileinput.css" rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/bootstrap/font-awesome.css" rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/bootstrap/build.css" rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/bootstrap/BootSideMenu.css" rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/bootstrap/bootstrap-drawer.css"  rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/main.css" rel="stylesheet">
 	
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.js"></script>
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.cookie.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/bootstrap.min.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/fileinput.js"></script>
+	<script src="<%=request.getContextPath() %>/js/bootstrap/BootSideMenu.js"></script>
 </head>
 <body>
 	<input id="myId" type="hidden" value="${sessionScope.userid }">
@@ -50,17 +53,11 @@
 						<label>My Groups</label>
 						<button onclick="initMyGroupsToDelete()" data-toggle="modal" data-target="#myGroupModal" class="btn btn-default" style="border: 0px;float: right;margin-top: 5px;"><span class="glyphicon glyphicon-tasks"></span></button>
 					</div>
-					<ul id="myGroupList" style="list-style: none;margin: 0px;padding: 0px;">
-<!-- 					     <li> -->
-<!-- 					     	<div style="width: 100%;"> -->
-<!-- 					     		<input type="hidden" value="1"> -->
-<!-- 						     	<button class="btn btn-default word-color" style="border: 0px;text-align: left;float: left;">classmates</button> -->
-<!-- 							   	<div style="width:20%;float: right;margin-top: 5px;"> -->
-<!-- 						     		<button class="btn btn-default" style="border: 0px;padding: 0px;"><span class="glyphicon glyphicon-plus"></span></button> -->
-<!-- 									<button class="btn btn-default" style="border: 0px;padding: 0px;"><span class="glyphicon glyphicon-minus"></span></button> -->
-<!-- 							    </div> -->
-<!-- 							</div> -->
-<!-- 						</li> -->
+					<ul style="list-style: none;margin: 0px;padding: 0px;">
+						<div class="container-fluid">
+							<div class="accordion" id="myGroupList">
+							</div>
+						</div>
 					</ul>
 				</div>
 			</div>
@@ -86,45 +83,40 @@
 					<div id="myFriendsAndJoinedGroupList" class="tab-content">
 					    <div class="tab-pane fade in active" id="myFriendList">
 							<ul id="myFriendListUl" style="list-style: none;margin: 0px;padding: 0px;">
-<!-- 								<li> -->
-<!-- 									<input type="hidden" value="1"> -->
-<!-- 							     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;"> -->
-<!-- 										<div class="word-color"> -->
-<%-- 											<img style="width: 25px;height: 25px;" src="<%=request.getContextPath()%>/images/head.jpg">&nbsp; --%>
-<!-- 											carlos -->
-<!-- 										</div> -->
-<!-- 									</button> -->
-<!-- 								</li> -->
 							</ul>
 					    </div>
 					    <div class="tab-pane fade" id="myJoinedGroupList">
-					    	<ul id="myJoinedGroupListUl" style="list-style: none;margin: 0px;padding: 0px;">
-								<li>
-							     	<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
-										<div class="word-color">
-											JoinedGroup1
-										</div>
-									</button>
-								</li>
-								<li>
-									<button class="btn btn-default" style="width:100%;border: 0px;text-align: left;">
-										<div class="word-color">
-											JoinedGroup2
-										</div>
-									</button>
-								</li>
+					    	<ul style="list-style: none;margin: 0px;padding: 0px;">
+   								<div class="container-fluid">
+									<div class="accordion" id="myJoinedGroupListUl">
+									</div>
+								</div>
 							</ul>
 					    </div>
 					</div>
 				</div>
 			</div>
 			<div id="right" class="col-md-6">
-				<div id="othersideName" class="word-color" style="font-size: 30px;">
-					carlos
+				<div id="chatTarget">
+					<div id="chatTargetName" class="word-color" style="font-size: 30px;">NULL</div>
+					<input id="chatTargetType" type="hidden" value="0">
+					<input id="chatTargetId" type="hidden" value="0">
 				</div>
 				<div id="triangle"></div>
-				<div id="othersideContent" style="overflow: auto;">
-				
+				<div id="othersideContent">
+					<div id="chatContent" style="width:100%;height:75%;overflow: auto;"></div>
+					<div id="chatTool" style="width:100%;height:5%;border-top: 1px solid grey;">
+						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-save-file"></span></button>
+						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
+						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-level-up"></span></button>
+					</div>
+					<div id="sendContent" style="width:100%;height:20%;padding: 0px;">
+					  	<div class="form-group"> 
+						    <textarea id="sendText" class="form-control" onkeydown="textareaKeyDown()"></textarea> 
+						  	<button class="btn btn-primary" onclick="chatSendMessage()">发送</button>
+						  	<button class="btn btn-default" onclick="chatTextClear()">清空</button>
+						</div> 
+					</div>
 				</div>
 			</div>
 		</div>
@@ -135,6 +127,7 @@
 	<%@ include file="friendAddOrGroupJoin.jsp" %>
 	<%@ include file="friendDeleteOrGroupExit.jsp" %>
 	<%@ include file="GroupUserAddOrDelete.jsp" %>
+	<%@ include file="rightVideo.jsp" %>
 
 </body>
 

@@ -96,11 +96,23 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	public Set<Group> findGroupCreated(int userid) {
 		User user = userDao.findById(User.class, userid);
 		Set<Group> groupSet = user.getGroupsCreated();
-		System.out.println(groupSet.size());
+		//使用代理对象，获取真实对象
+		for(Group group : groupSet){
+			System.out.println(group.getMembers().size());
+		}
 		userDao.clear();
-		for(Group g : groupSet){
-			g.setCreator(null);
-			g.setMembers(null); 
+		for(Group group : groupSet){
+			group.getCreator().setPassword("");
+			group.getCreator().setFriends(null);
+			group.getCreator().setGroupsCreated(null);
+			group.getCreator().setGroupsJoined(null);
+			Set<User> members = group.getMembers();
+			for(User member : members){
+				member.setPassword("");
+				member.setFriends(null);
+				member.setGroupsCreated(null);
+				member.setGroupsJoined(null);
+			}
 		}
 		
 		return groupSet;
@@ -110,14 +122,23 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	public Set<Group> findGroupJoined(int userid) {
 		User user = userDao.findById(User.class, userid);
 		Set<Group> groupSet = user.getGroupsJoined();
-		System.out.println(groupSet.size());
+		//使用代理对象，获取真实对象
+		for(Group group : groupSet){
+			System.out.println(group.getMembers().size());
+		}
 		userDao.clear();
 		for(Group group : groupSet){
-			group.setMembers(null);
 			group.getCreator().setPassword("");
 			group.getCreator().setFriends(null);
 			group.getCreator().setGroupsCreated(null);
 			group.getCreator().setGroupsJoined(null);
+			Set<User> members = group.getMembers();
+			for(User member : members){
+				member.setPassword("");
+				member.setFriends(null);
+				member.setGroupsCreated(null);
+				member.setGroupsJoined(null);
+			}
 		}
 		return groupSet;
 	}

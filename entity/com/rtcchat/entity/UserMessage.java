@@ -27,6 +27,7 @@ import com.rtcchat.tools.MessageType;
 public class UserMessage {
 	public static final String FIELD_OBJECTNAME = "UserMessage";
 	public static final String FIELD_ID = "id";
+	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_TEXT = "text";
 	public static final String FIELD_FROMUSER = "fromUser";
 	public static final String FIELD_TOUSER = "toUser";
@@ -35,10 +36,11 @@ public class UserMessage {
 	
 	private int id;
 	private String text;//消息体
+	private String type;//消息类型
 	private User fromUser;//发送者
 	private User toUser;//接收者
 	private Date sendTime;//发送的时间
-	private String ifread;//是否被读取
+	private boolean ifread;//是否被读取
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -48,6 +50,14 @@ public class UserMessage {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	@Column(nullable=false)
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	@Column(nullable=false)
@@ -86,10 +96,10 @@ public class UserMessage {
 	}
 	
 	@Column(nullable = false)
-	public String getIfread() {
+	public boolean getIfread() {
 		return ifread;
 	}
-	public void setIfread(String ifread) {
+	public void setIfread(boolean ifread) {
 		this.ifread = ifread;
 	}
 }

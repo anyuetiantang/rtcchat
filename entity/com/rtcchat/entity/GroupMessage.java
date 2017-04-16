@@ -24,12 +24,14 @@ import javax.persistence.TemporalType;
 public class GroupMessage {
 	public static final String FIELD_OBJECTNAME = "GroupMessage";
 	public static final String FIELD_ID = "id";
+	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_TEXT = "text";
 	public static final String FIELD_BELONGTOGROUP = "belongToGroup";
 	public static final String FIELD_FROMUSER = "fromUser";
 	public static final String FIELD_SENDTIME = "sendTime";
 	
 	private int id;
+	private String type;//消息类型
 	private String text;//消息体
 	private Group belongToGroup;//属于的群组
 	private User fromUser;//发送者
@@ -43,6 +45,14 @@ public class GroupMessage {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	@Column(nullable=false)
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	@Column(nullable=false)
@@ -63,7 +73,7 @@ public class GroupMessage {
 	}
 	
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="from_user_id")
 	public User getFromUser() {
 		return fromUser;
 	}

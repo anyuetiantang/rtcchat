@@ -76,6 +76,9 @@ function onMessage(event){
 		case "groupUserExitRes":
 			groupUserExitRes(socketData);
 			break;
+		case "messageUser":
+			messageUser(socketData);
+			break;
 		default:
 			alert(socketData.msg);
 			break;
@@ -163,8 +166,8 @@ function groupJoinReqFromGroup(socketData){
 function groupJoinResFromGroup(socketData){
 	if(socketData.agree){
 		$("#friendAddOrGroupJoinModal").modal("hide");
-		getMyGroupsAndFriends(false,false,true,function(){
-			initMyGroupsJoined();
+		getMyGroupsAndFriends(false,true,false,function(){
+			initMyGroups();
 		});
 		alert(socketData.targetName+" 同意了你的请求");
 	}else{
@@ -254,4 +257,12 @@ function groupUserExitRes(socketData){
 		initMyGroupsJoined();
 	});
 	alert("你已经退出群组"+socketData.groupname);
+}
+
+//获取用户私聊信息
+function messageUser(socketData){
+	console.log("socketData");
+	console.log(socketData);
+	var sourceId = socketData.sourceId;
+	$("#myFriendListButton"+sourceId).addClass("hasMessage");
 }

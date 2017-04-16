@@ -10,6 +10,11 @@ body{
 /* 	background-image: url(../images/timg.jpg); */
 }
 
+.hasMessage{
+	background-color : rgb(253,251,8);
+	opacity : 0.5;
+}
+
 .word-color{
 	color: rgb(180,192,206);
 	font-weight: bolder;
@@ -108,5 +113,13 @@ body{
 #main #right #othersideContent{
 	width:90%;
 	height:89%;
+/* 	background-color: rgb(238,238,238); */
+}
+
+#main #right #chatContent{
+	background-color: rgb(238,238,238);
+}
+
+#main #right #chatTool{
 	background-color: rgb(238,238,238);
 }

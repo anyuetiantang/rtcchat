@@ -22,7 +22,9 @@ public enum WebSocketMsgType {
 	GROUP_JOIN_RES_FROM_USER("groupJoinResFromUser","某人请求加入群组请求"),
 	GROUP_JOIN_RES_FROM_USER_SUC("groupJoinResFromUserSuc","某人请求加入群组请求回复之后的处理"),
 	GROUP_USER_EXIT("groupUserExit","群组用户退出"),
-	GROUP_USER_EXIT_RES("groupUserExitRes","群组用户退出的回应");
+	GROUP_USER_EXIT_RES("groupUserExitRes","群组用户退出的回应"),
+	MESSAGE_USER("messageUser","私聊信息"),
+	MESSAGE_GROUP("messageGroup","群组信息");
 	
 	private String socketType;
 	private String description;
