@@ -79,6 +79,9 @@ function onMessage(event){
 		case "messageUser":
 			messageUser(socketData);
 			break;
+		case "messageGroup":
+			messageGroup(socketData);
+			break;
 		default:
 			alert(socketData.msg);
 			break;
@@ -261,8 +264,32 @@ function groupUserExitRes(socketData){
 
 //获取用户私聊信息
 function messageUser(socketData){
-	console.log("socketData");
-	console.log(socketData);
-	var sourceId = socketData.sourceId;
-	$("#myFriendListButton"+sourceId).addClass("hasMessage");
+	if($("#chatTargetType").val()==="user" && $("#chatTargetId").val()==socketData.sourceId){
+		var chatContentHtml = "";
+			chatContentHtml += 	"<li style=\"list-style: none;\">"+
+									"<div class=\"word-color\">"+socketData.sourceName+
+									" "+transferTime(socketData.sendTime)+"</div>"+
+									"<div>"+socketData.text+"</div>"+
+								"</li>";
+		$("#chatContentUl").append(chatContentHtml);
+	}else{
+		var sourceId = socketData.sourceId;
+		$("#myFriendListButton"+sourceId).addClass("hasMessage");
+	}
+}
+
+//获取用户的群组信息
+function messageGroup(socketData){
+	if($("#chatTargetType").val()==="group" && $("#chatTargetId").val()==socketData.groupId){
+		var chatContentHtml = "";
+			chatContentHtml += 	"<li style=\"list-style: none;\">"+
+									"<div class=\"word-color\">"+socketData.sourceName+
+									" "+transferTime(socketData.sendTime)+"</div>"+
+									"<div>"+socketData.text+"</div>"+
+								"</li>";
+		$("#chatContentUl").append(chatContentHtml);
+	}else{
+		var groupId = socketData.groupId;
+		$("#myGroupListButton"+groupId).addClass("hasMessage");
+	}
 }

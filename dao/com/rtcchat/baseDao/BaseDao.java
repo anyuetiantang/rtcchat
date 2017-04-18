@@ -11,14 +11,20 @@ public interface BaseDao {
 	//根据传入的对象查找符合的对象（使用hibernateTemplate实现）
 	public <T> List<T> findByExample(T t);
 	
+	//根据传入的对象查找符合的对象（使用hibernateTemplate实现）
+	public <T> List<T> findByExample(T t,int maxNumber);
+	
 	//根据criteria条件查询
 	public List findByCriteria(Criteria criteria);
 	
 	//根据id查询
 	public <T> T findById(Class<T> clazz,int id);
 	
-	//根据id查询
+	//根据hql查询
 	public <T> List<T> findByHql(Class<T> clazz,String hql);
+	
+	//根据hql查询
+	public <T> List<T> findByHql(Class<T> clazz,int maxNumber,String hql);
 	
 	//添加
 	public <T> void save(T t);

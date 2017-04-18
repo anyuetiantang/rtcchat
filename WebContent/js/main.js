@@ -52,7 +52,7 @@ function initMyGroups(){
 	for(var i=0;i<groupsCreated.length;i++){
 		myGroupHtml += 	"<li class=\"containner accordion-group\">"+ 
 							"<div class=\"accordion-heading\" style=\"width: 100%;\">"+
-								"<button class=\"btn btn-default word-color col-md-9 accordion-toggle\" " +
+								"<button id=\"myGroupListButton"+groupsCreated[i].id+"\" class=\"btn btn-default word-color col-md-9 accordion-toggle\" " +
 									"data-toggle=\"collapse\" data-parent=\"#myGroupList\" href=\"#groupCreatedMembers"+groupsCreated[i].id+"\" " +
 									"ondblclick=\"setChatTarget('group',"+groupsCreated[i].id+",'"+groupsCreated[i].groupname+"("+myUsername+")')\" style=\"border: 0px;text-align: left;\">"+groupsCreated[i].groupname+"</button>"+
 								"<span class=\"col-md-3\" style=\"margin-top: 5px;\">"+
@@ -128,7 +128,7 @@ function initMyGroupsJoined(){
 	for(var i=0;i<groupsJoined.length;i++){
 		myGroupJoinedHtml += 	"<li class=\"containner\">"+ 
 									"<div class=\"accordion-heading\" style=\"width: 100%;\">"+
-										"<button class=\"btn btn-default word-color col-md-12 accordion-toggle\" data-toggle=\"collapse\" " +
+										"<button id=\"myGroupListButton"+groupsJoined[i].id+"\" class=\"btn btn-default word-color col-md-12 accordion-toggle\" data-toggle=\"collapse\" " +
 												"data-parent=\"#myJoinedGroupListUl\" href=\"#groupJoinedMembers"+groupsJoined[i].id+"\" " +
 												"ondblclick=setChatTarget('group',"+groupsJoined[i].id+",'"+groupsJoined[i].groupname+"("+groupsJoined[i].creator.username+")') " +
 												"style=\"border: 0px;text-align: left;\">"+
@@ -187,6 +187,22 @@ function chatSendMessage(){
 	var socketData=null;
 	
 	$("#sendText").val("");
+	if(targetId == 0){
+		alert("请选择对象");
+		return;
+	}
+	
+	if(!text){
+		alert("发送信息不能为空！");
+		return;
+	}
+	
+	var tempHtml = "<li style=\"list-style: none;\">"+
+						"<div class=\"word-color\">"+myUsername+
+						" "+transferTime(new Date())+"</div>"+
+						"<div>"+text+"</div>"+
+					"</li>";
+	$("#chatContentUl").append(tempHtml);
 	
 	if(messageType == "user"){
 		socketData = 		data = {
@@ -220,6 +236,53 @@ function setChatTarget(type,id,name){
 	$("#chatTargetType").val(type);
 	$("#chatTargetId").val(id);
 	
-	$("#myFriendListButton"+id).removeClass("hasMessage");
+	var data = null;
+	if(type === "user"){
+		$("#myFriendListButton"+id).removeClass("hasMessage");
+		data = {
+				type : type,
+				sourceId : id,
+				targetId : myId
+		}
+	}else if(type === "group"){
+		$("#myGroupListButton"+id).removeClass("hasMessage");
+		data = {
+				type : type,
+				sourceId : myId,
+				targetId : id
+		}
+	}
+	$("#chatContentUl").empty();
+	
+	var url = $("#projectPath").val()+"/message/getMessage";
+	ajaxRequest(url,data,function(res){
+		var dataRes = JSON.parse(res);
+		if(dataRes.code === "200"){
+			console.log(dataRes);
+			loadChatContent(dataRes.messageList);
+		}else{
+			alert(dataRes.msg);
+		}
+	});
 }
+
+//加载聊天信息
+function loadChatContent(messageList){
+	if(messageList == null || messageList.length == 0){
+		return;
+	}
+	
+	var chatContentHtml = "";
+	for(var i=0;i<messageList.length;i++){
+		chatContentHtml += 	"<li style=\"list-style: none;\">"+
+								"<div class=\"word-color\">"+messageList[i].fromUser.username+
+								" "+transferTime(messageList[i].sendTime)+"</div>"+
+								"<div>"+messageList[i].text+"</div>"+
+							"</li>";
+	}
+	$("#chatContentUl").empty();
+	$("#chatContentUl").append(chatContentHtml);
+}
+
+
 

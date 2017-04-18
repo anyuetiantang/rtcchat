@@ -25,3 +25,32 @@ function getCookie(target){
 		}
 	}
 }
+
+function transferTime(time){
+	var year = time.year + 1900 || time.getYear() + 1900;
+	var month = time.month + 1 || time.getMonth();
+	var day = time.date || time.getDate();
+	var hour = time.hours || time.getHours();
+	var minute = time.minutes || time.getMinutes();
+	var second = time.seconds || time.getSeconds();
+	
+	if(month < 10){
+		month = "0" + month;
+	}
+	if(day < 10){
+		day = "0" + day;
+	}
+	if(hour < 10){
+		hour = "0" + hour;
+	}
+	if(minute < 10){
+		minute = "0" + minute;
+	}
+	if(second < 10){
+		second = "0" + second;
+	}
+	
+	var strTime = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
+	return strTime;
+}
+

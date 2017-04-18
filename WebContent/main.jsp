@@ -104,7 +104,10 @@
 				</div>
 				<div id="triangle"></div>
 				<div id="othersideContent">
-					<div id="chatContent" style="width:100%;height:75%;overflow: auto;"></div>
+					<div id="chatContent" style="width:100%;height:75%;overflow: auto;">
+						<ul id="chatContentUl" style="margin-top: 20px;margin-bottom: 20px;margin-left:30px;padding: 0px;">
+						</ul>
+					</div>
 					<div id="chatTool" style="width:100%;height:5%;border-top: 1px solid grey;">
 						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-save-file"></span></button>
 						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>

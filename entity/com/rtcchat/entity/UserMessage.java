@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,8 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.rtcchat.tools.MessageType;
 
 /**
  * 
@@ -35,8 +32,8 @@ public class UserMessage {
 	public static final String FIELD_IFREAD = "ifread";
 	
 	private int id;
-	private String text;//消息体
 	private String type;//消息类型
+	private String text;//消息体
 	private User fromUser;//发送者
 	private User toUser;//接收者
 	private Date sendTime;//发送的时间

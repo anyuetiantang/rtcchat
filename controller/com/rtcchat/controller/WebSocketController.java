@@ -1,6 +1,7 @@
 package com.rtcchat.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.rtcchat.entity.Group;
+import com.rtcchat.entity.GroupMessage;
 import com.rtcchat.entity.User;
+import com.rtcchat.entity.UserMessage;
 import com.rtcchat.service.GroupService;
 import com.rtcchat.service.MessageService;
 import com.rtcchat.service.UserService;
@@ -63,6 +66,8 @@ public class WebSocketController extends TextWebSocketHandler{
 			groupUserExit(userService,groupService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.MESSAGE_USER.getSocketType())){
 			sendUserMessage(userService,messageService,jsonObjInput);
+		}else if(type.equals(WebSocketMsgType.MESSAGE_GROUP.getSocketType())){
+			sendGroupMessage(userService,groupService,messageService,jsonObjInput);
 		}
 		
 	}
@@ -377,29 +382,84 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//私聊信息
-	public void sendUserMessage(UserService userService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
+	private void sendUserMessage(UserService userService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int targetId = jsonObjInput.getInt("targetId");
 		String text = jsonObjInput.getString("text");
 		
+		User sourceUser = userService.findById(User.class, sourceId);
+		User targetUser = userService.findById(User.class, targetId);
+		
 		Session sessionTarget = Storage.socketMap.get(targetId);
-		if(sessionTarget == null){
+		if(sessionTarget == null){	//用户不在线
 			map.put("type",WebSocketMsgType.ERROR.getSocketType());
 			map.put("msg", "该用户不在线，当他上线会收到你的信息");
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			session.getBasicRemote().sendText(jsonObjOutput.toString());
-			
-			//用户不在线，将消息放入历史消息
 		}else{
 			map.put("type", WebSocketMsgType.MESSAGE_USER.getSocketType());
 			map.put("sourceId", sourceId);
+			map.put("sourceName", sourceUser.getUsername());
 			map.put("targetId", targetId);
+			map.put("targetName", targetUser.getUsername());
+			map.put("sendTime", new Date());
 			map.put("text", text);
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
 		}
 		
+		//将消息存入数据库
+		UserMessage message = new UserMessage();
+		message.setType(WebSocketMsgType.MESSAGE_USER.getSocketType());
+		message.setText(text);
+		message.setFromUser(sourceUser);
+		message.setToUser(targetUser);
+		message.setSendTime(new Date());
+		message.setIfread(false);
+		messageService.save(message);
+	}
+	
+	//发送群组消息
+	private void sendGroupMessage(UserService userService,GroupService groupService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
+		Map<String,Object> map = new HashMap<String,Object>();
+		int sourceId = jsonObjInput.getInt("sourceId");
+		int groupId = jsonObjInput.getInt("targetId");
+		String text = jsonObjInput.getString("text");
+		
+		User sourceUser = userService.findById(User.class, sourceId);
+		Group targetGroup = groupService.findById(Group.class, groupId);
+		
+		map.put("type", WebSocketMsgType.MESSAGE_GROUP.getSocketType());
+		map.put("sourceId", sourceId);
+		map.put("sourceName", sourceUser.getUsername());
+		map.put("groupId", groupId);
+		map.put("groupName", targetGroup.getGroupname());
+		map.put("sendTime", new Date());
+		map.put("text", text);
+		JSONObject jsonObjOutput = JSONObject.fromObject(map);
+		
+		Set<User> members = groupService.findMembersById(groupId);
+		User creator = groupService.findCreator(groupId);
+		members.add(creator);
+		for(User member : members){
+			Session sessionOther = Storage.socketMap.get(member.getId());
+			if(member.getId() == sourceId)
+				continue;
+			
+			if(sessionOther != null){
+				sessionOther.getBasicRemote().sendText(jsonObjOutput.toString());
+			}
+		}
+		
+		//将数据存入数据库
+		GroupMessage groupMessage = new GroupMessage();
+		groupMessage.setType(WebSocketMsgType.MESSAGE_GROUP.getSocketType());
+		groupMessage.setText(text);
+		groupMessage.setBelongToGroup(targetGroup);
+		groupMessage.setFromUser(sourceUser);
+		groupMessage.setSendTime(new Date());
+		messageService.save(groupMessage);
 	}
 	
 	

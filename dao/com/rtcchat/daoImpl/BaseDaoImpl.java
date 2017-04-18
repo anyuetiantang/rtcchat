@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -26,6 +27,11 @@ public class BaseDaoImpl implements BaseDao {
 	public <T> List<T> findByExample(T t) {
 		return (List<T>)hibernateTemplate.findByExample(t);
 	}
+	
+	@Override
+	public <T> List<T> findByExample(T t,int maxNumber) {
+		return (List<T>)hibernateTemplate.findByExample(t);
+	}
 
 	@Override
 	public List findByCriteria(Criteria criteria) {
@@ -42,6 +48,14 @@ public class BaseDaoImpl implements BaseDao {
 	@Override
 	public <T> List<T> findByHql(Class<T> clazz, String hql) {
 		List<T> list = sessionFactory.getCurrentSession().createQuery(hql).list();
+		return list;
+	}
+	
+	@Override
+	public <T> List<T> findByHql(Class<T> clazz,int maxNumber,String hql) {
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setMaxResults(maxNumber);
+		List<T> list = query.list();
 		return list;
 	}
 	
