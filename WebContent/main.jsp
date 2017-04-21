@@ -109,9 +109,8 @@
 						</ul>
 					</div>
 					<div id="chatTool" style="width:100%;height:5%;border-top: 1px solid grey;">
-						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-save-file"></span></button>
-						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
-						<button class="btn btn-default" style="padding:0px;"><span class="glyphicon glyphicon-level-up"></span></button>
+						<button onclick="getFiles()" class="btn btn-default btn-lg" data-toggle="modal" data-target="#fileRepertoryModal" style="padding:0px;"><span class="glyphicon glyphicon-book"></span></button>
+						<button class="btn btn-default btn-lg" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
 					</div>
 					<div id="sendContent" style="width:100%;height:20%;padding: 0px;">
 					  	<div class="form-group"> 
@@ -131,6 +130,7 @@
 	<%@ include file="friendDeleteOrGroupExit.jsp" %>
 	<%@ include file="GroupUserAddOrDelete.jsp" %>
 	<%@ include file="rightVideo.jsp" %>
+	<%@ include file="fileRepertory.jsp" %>
 
 </body>
 

@@ -11,7 +11,8 @@ public enum ErrorType {
 	ERROR_HEADIMG("6003","更新头像失败"),
 	ERROR_PASSWORDERROR("6004","原密码不正确"),
 	ERROR_GROUPEXIST("6005","同名群组已存在"),
-	ERROR_GROUPNOEXIST("6006","此群组不存在");
+	ERROR_GROUPNOEXIST("6006","此群组不存在"),
+	ERROR_ONLINE("6007","用户已经在线");
 	
 	private String code;
 	private String msg;

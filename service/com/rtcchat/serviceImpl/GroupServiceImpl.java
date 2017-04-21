@@ -16,7 +16,6 @@ import com.rtcchat.dao.UserDao;
 import com.rtcchat.entity.Group;
 import com.rtcchat.entity.User;
 import com.rtcchat.service.GroupService;
-import com.rtcchat.service.UserService;
 import com.rtcchat.tools.ErrorType;
 
 @Service("groupService")
@@ -29,8 +28,8 @@ public class GroupServiceImpl  extends BaseServiceImpl implements GroupService{
 		try {
 			User user = groupDao.findById(User.class, userid);
 			Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Group.class);
-			criteria.add(Restrictions.eq("creator", user));
-			criteria.add(Restrictions.eq("groupname", groupName));
+			criteria.add(Restrictions.eq(Group.FIELD_CREATOR, user));
+			criteria.add(Restrictions.eq(Group.FIELD_GROUPNAME, groupName));
 			List<Group> tempList = groupDao.findByCriteria(criteria);
 			
 			if(tempList != null && tempList.size()!=0){

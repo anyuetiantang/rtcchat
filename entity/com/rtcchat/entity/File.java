@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,8 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.rtcchat.tools.FileType;
 
 /**
  * 
@@ -38,11 +35,11 @@ public class File implements Serializable{
 
 	
 	private int id;
-	private String filename;//文件名
+	private String originName;//文件原名
 	private String filepath;//文件存储相对路径
 	private Date uploadTime;//文件上传时间
 	private String filetype;//文件类型，是群组的文件还是用户的文件
-	private User belongToUser;//当文件名为user的时候此属性不为空，表示属于哪个用户
+	private User belongToUser;//表示属于哪个用户
 	private User sendToUser;//当文件名为user的时候此属性不为空，表示发送给哪个用户
 	private Group belongToGroup;//当文件名为group的时候此属性不为空，表示属于哪个群组
 	
@@ -57,14 +54,14 @@ public class File implements Serializable{
 	}
 	
 	@Column(nullable=false,length=20)
-	public String getFilename() {
-		return filename;
+	public String getOriginName() {
+		return originName;
 	}
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setOriginName(String originName) {
+		this.originName = originName;
 	}
 	
-	@Column(nullable=false,length=20)
+	@Column(nullable=false,length=100)
 	public String getFilepath() {
 		return filepath;
 	}

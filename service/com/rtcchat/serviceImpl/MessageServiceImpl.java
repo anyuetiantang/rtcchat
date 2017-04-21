@@ -31,13 +31,13 @@ public class MessageServiceImpl extends BaseServiceImpl implements MessageServic
 		User toUser = userDao.findById(User.class, toUserId);
 		
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserMessage.class);
-		criteria.add(Restrictions.or(Restrictions.eq("fromUser",toUser),Restrictions.eq("fromUser", fromUser)));
-		criteria.add(Restrictions.or(Restrictions.eq("toUser",toUser),Restrictions.eq("toUser", fromUser)));
-		criteria.add(Restrictions.eq("type", WebSocketMsgType.MESSAGE_USER.getSocketType()));
-		criteria.addOrder(Order.asc("sendTime"));
+		criteria.add(Restrictions.or(Restrictions.eq(UserMessage.FIELD_FROMUSER,toUser),Restrictions.eq(UserMessage.FIELD_FROMUSER, fromUser)));
+		criteria.add(Restrictions.or(Restrictions.eq(UserMessage.FIELD_TOUSER,toUser),Restrictions.eq(UserMessage.FIELD_TOUSER, fromUser)));
+		criteria.add(Restrictions.eq(UserMessage.FIELD_TYPE, WebSocketMsgType.MESSAGE_USER.getSocketType()));
+		criteria.addOrder(Order.asc(UserMessage.FIELD_SENDTIME));
 		criteria.setMaxResults(number);
 		if(ifNotRead){
-			criteria.add(Restrictions.eq("ifread", false));
+			criteria.add(Restrictions.eq(UserMessage.FIELD_IFREAD, false));
 		}
 		List<UserMessage> messageList = messageDao.findByCriteria(criteria);
 		messageDao.clear();
@@ -61,9 +61,9 @@ public class MessageServiceImpl extends BaseServiceImpl implements MessageServic
 		Group belongToGroup = groupDao.findById(Group.class, groupId);
 		
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(GroupMessage.class);
-		criteria.add(Restrictions.eq("belongToGroup", belongToGroup));
-		criteria.add(Restrictions.eq("type", WebSocketMsgType.MESSAGE_GROUP.getSocketType()));
-		criteria.addOrder(Order.asc("sendTime"));
+		criteria.add(Restrictions.eq(GroupMessage.FIELD_BELONGTOGROUP, belongToGroup));
+		criteria.add(Restrictions.eq(GroupMessage.FIELD_TYPE, WebSocketMsgType.MESSAGE_GROUP.getSocketType()));
+		criteria.addOrder(Order.asc(GroupMessage.FIELD_SENDTIME));
 		criteria.setMaxResults(number);
 		List<GroupMessage> messageList = messageDao.findByCriteria(criteria);
 		messageDao.clear();
@@ -89,10 +89,10 @@ public class MessageServiceImpl extends BaseServiceImpl implements MessageServic
 		User toUser = userDao.findById(User.class, toUserId);
 		
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserMessage.class);
-		criteria.add(Restrictions.eq("fromUser", fromUser));
-		criteria.add(Restrictions.eq("toUser", toUser));
-		criteria.add(Restrictions.eq("type", WebSocketMsgType.MESSAGE_USER.getSocketType()));
-		criteria.add(Restrictions.eq("ifread", false));
+		criteria.add(Restrictions.eq(UserMessage.FIELD_FROMUSER, fromUser));
+		criteria.add(Restrictions.eq(UserMessage.FIELD_TOUSER, toUser));
+		criteria.add(Restrictions.eq(UserMessage.FIELD_TYPE, WebSocketMsgType.MESSAGE_USER.getSocketType()));
+		criteria.add(Restrictions.eq(UserMessage.FIELD_IFREAD, false));
 		List<UserMessage> messageList = messageDao.findByCriteria(criteria);
 		for(UserMessage message : messageList){
 			message.setIfread(true);

@@ -23,7 +23,6 @@ import com.rtcchat.entity.User;
 import com.rtcchat.service.UserService;
 import com.rtcchat.tools.ErrorType;
 import com.rtcchat.tools.Md5Tool;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import net.sf.json.JSONObject;
 

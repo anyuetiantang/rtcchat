@@ -8,17 +8,16 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.rtcchat.dao.GroupDao;
 import com.rtcchat.dao.UserDao;
 import com.rtcchat.entity.Group;
 import com.rtcchat.entity.User;
 import com.rtcchat.service.UserService;
 import com.rtcchat.tools.ErrorType;
+import com.rtcchat.tools.Storage;
 
 @Service("userService")
 public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	private UserDao userDao = null;
-	private GroupDao groupDao = null;
 
 	@Override
 	public ErrorType userAdd(User user) {
@@ -34,8 +33,15 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	@Override
 	public ErrorType login(String username, String password) {
 		List<User> userList = userDao.findByUsernameOrPassword(username,password);
-		if(userList!=null && userList.size()!=0){
-			return ErrorType.ERROR_SUCCESS;
+		if(userList!=null && userList.size()==1){
+			User user = userList.get(0);
+			if(Storage.socketMap.get(user.getId()) == null){
+				return ErrorType.ERROR_SUCCESS;
+			}else{
+				return ErrorType.ERROR_ONLINE;
+			}
+		}else if(userList.size() > 1){
+			return ErrorType.ERROR_UNKNOWN;
 		}else{
 			return ErrorType.ERROR_LOGIN;
 		}
@@ -232,10 +238,4 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		this.userDao = userDao;
 	}
 	
-	@Resource(name="groupDao")
-	public void setGroupDao(GroupDao groupDao) {
-		this.groupDao = groupDao;
-	}
-
-
 }
