@@ -27,12 +27,33 @@ function getCookie(target){
 }
 
 function transferTime(time){
-	var year = time.year + 1900 || time.getYear() + 1900;
-	var month = time.month + 1 || time.getMonth();
-	var day = time.date || time.getDate();
-	var hour = time.hours || time.getHours();
-	var minute = time.minutes || time.getMinutes();
-	var second = time.seconds || time.getSeconds();
+	var year = time.year + 1900;
+	var month = time.month + 1;
+	var day = time.date;
+	var hour = time.hours;
+	var minute = time.minutes;
+	var second = time.seconds;
+	
+	if(year!=0 && !year){
+		year = time.getYear() + 1900;
+	}
+	if(month!=0 && !month){
+		month = time.getMonth() + 1;
+	}
+	if(day!=0 && !day){
+		day = time.getDate();
+	}
+	if(hour!=0 && !hour){
+		hour = time.getHours();
+	}
+	if(minute!=0 && !minute){
+		minute = time.getMinutes();
+	}
+	if(second!=0 && !second){
+		second = time.getSeconds();
+	}
+
+	
 	
 	if(month < 10){
 		month = "0" + month;

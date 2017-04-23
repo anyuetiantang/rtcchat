@@ -23,6 +23,10 @@
   </servlet-mapping>
   <servlet-mapping>
 	  	<servlet-name>default</servlet-name>
+	  	<url-pattern>*.gif</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+	  	<servlet-name>default</servlet-name>
 	  	<url-pattern>*.tff</url-pattern>
   </servlet-mapping>
   <servlet-mapping>

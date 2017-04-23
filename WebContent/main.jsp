@@ -12,6 +12,9 @@
 	<link href="<%=request.getContextPath() %>/css/bootstrap/build.css" rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/bootstrap/BootSideMenu.css" rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/bootstrap/bootstrap-drawer.css"  rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/jquery/jquery.mCustomScrollbar.min.css"  rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/jquery/jquery.emoji.css"  rel="stylesheet">
+	<link href="<%=request.getContextPath() %>/css/jquery/railscasts.css"  rel="stylesheet">
 	<link href="<%=request.getContextPath() %>/css/main.css" rel="stylesheet">
 	
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.js"></script>
@@ -19,6 +22,10 @@
 	<script src="<%=request.getContextPath() %>/js/bootstrap/bootstrap.min.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/fileinput.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/BootSideMenu.js"></script>
+	<script src="<%=request.getContextPath() %>/js/jquery/highlight.pack.js"></script>
+	<script src="<%=request.getContextPath() %>/js/jquery/jquery.mousewheel-3.0.6.min.js"></script>
+	<script src="<%=request.getContextPath() %>/js/jquery/jquery.mCustomScrollbar.min.js"></script>
+	<script src="<%=request.getContextPath() %>/js/jquery/jquery.emoji.min.js"></script>
 </head>
 <body>
 	<input id="myId" type="hidden" value="${sessionScope.userid }">
@@ -109,14 +116,15 @@
 						</ul>
 					</div>
 					<div id="chatTool" style="width:100%;height:5%;border-top: 1px solid grey;">
-						<button onclick="getFiles()" class="btn btn-default btn-lg" data-toggle="modal" data-target="#fileRepertoryModal" style="padding:0px;"><span class="glyphicon glyphicon-book"></span></button>
-						<button class="btn btn-default btn-lg" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
+						<button onclick="getFiles()" class="btn btn-default btn-lg" data-toggle="modal" data-target="#fileRepertoryModal" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
+						<button onclick="getHistoryMessage()" class="btn btn-default btn-lg" style="padding:0px;"><span class="glyphicon glyphicon-book"></span></button>
+						<button id="emojiBtn" class="btn btn-default btn-lg" style="padding:0px;">:)</button>
 					</div>
 					<div id="sendContent" style="width:100%;height:20%;padding: 0px;">
 					  	<div class="form-group"> 
 						    <textarea id="sendText" class="form-control" onkeydown="textareaKeyDown()"></textarea> 
 						  	<button class="btn btn-primary" onclick="chatSendMessage()">发送</button>
-						  	<button class="btn btn-default" onclick="chatTextClear()">清空</button>
+						  	<button id="testBtn" class="btn btn-default" onclick="chatTextClear()">清空</button>
 						</div> 
 					</div>
 				</div>

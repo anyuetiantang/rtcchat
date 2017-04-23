@@ -28,6 +28,7 @@ public class UserMessage {
 	public static final String FIELD_TEXT = "text";
 	public static final String FIELD_FROMUSER = "fromUser";
 	public static final String FIELD_TOUSER = "toUser";
+	public static final String FIELD_RELATEDGROUP = "relatedGroup";
 	public static final String FIELD_SENDTIME = "sendTime";
 	public static final String FIELD_IFREAD = "ifread";
 	
@@ -36,6 +37,7 @@ public class UserMessage {
 	private String text;//消息体
 	private User fromUser;//发送者
 	private User toUser;//接收者
+	private Group relatedGroup;//关联的群组，用于在加入群组的时候记录群组信息
 	private Date sendTime;//发送的时间
 	private boolean ifread;//是否被读取
 	
@@ -57,7 +59,7 @@ public class UserMessage {
 		this.type = type;
 	}
 	
-	@Column(nullable=false)
+	@Column(nullable=true)
 	public String getText() {
 		return text;
 	}
@@ -81,6 +83,15 @@ public class UserMessage {
 	}
 	public void setToUser(User toUser) {
 		this.toUser = toUser;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="relate_group_id")
+	public Group getRelatedGroup() {
+		return relatedGroup;
+	}
+	public void setRelatedGroup(Group relatedGroup) {
+		this.relatedGroup = relatedGroup;
 	}
 	
 	@Temporal(TemporalType.TIMESTAMP)

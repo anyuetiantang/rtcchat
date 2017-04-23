@@ -272,6 +272,7 @@ function messageUser(socketData){
 									"<div>"+socketData.text+"</div>"+
 								"</li>";
 		$("#chatContentUl").append(chatContentHtml);
+		transferFace();
 	}else{
 		var sourceId = socketData.sourceId;
 		$("#myFriendListButton"+sourceId).addClass("hasMessage");
@@ -288,6 +289,7 @@ function messageGroup(socketData){
 									"<div>"+socketData.text+"</div>"+
 								"</li>";
 		$("#chatContentUl").append(chatContentHtml);
+		transferFace();
 	}else{
 		var groupId = socketData.groupId;
 		$("#myGroupListButton"+groupId).addClass("hasMessage");

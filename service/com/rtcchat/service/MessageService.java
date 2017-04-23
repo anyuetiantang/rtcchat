@@ -1,6 +1,7 @@
 package com.rtcchat.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.rtcchat.baseService.BaseService;
 import com.rtcchat.entity.GroupMessage;
@@ -16,4 +17,6 @@ public interface MessageService extends BaseService{
 	//将私聊信息的未读属性改为已读属性
 	public void setIfRead(int fromUserId,int toUserId);
 	
+	//用户刚刚上线时获取未读取的信息
+	public List<UserMessage> getMessageNotRead(int userId);
 }

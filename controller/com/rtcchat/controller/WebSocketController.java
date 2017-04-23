@@ -3,6 +3,7 @@ package com.rtcchat.controller;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,19 +48,19 @@ public class WebSocketController extends TextWebSocketHandler{
 		
 		//switch case语句无法匹配变量
 		if(type.equals(WebSocketMsgType.FRIEND_ADD_REQ.getSocketType())){
-			friendAddReq(userService,jsonObjInput);
+			friendAddReq(userService,messageService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.FRIEND_ADD_RES.getSocketType())){
 			friendAddRes(userService,jsonObjInput,jsonMessage);
 		}else if(type.equals(WebSocketMsgType.FRIEND_DELETE_REQ.getSocketType())){
 			friendDeleteReq(userService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.GROUP_JOIN_REQ_FROM_GROUP.getSocketType())){
-			groupJoinReqFromGroup(userService,groupService,jsonObjInput);
+			groupJoinReqFromGroup(userService,groupService,messageService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.GROUP_JOIN_RES_FROM_GROUP.getSocketType())){
 			groupJoinResFromGroup(userService,groupService,jsonObjInput,jsonMessage);
 		}else if(type.equals(WebSocketMsgType.GROUP_USER_DELETE.getSocketType())){
 			groupUserDelete(userService,groupService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.GROUP_JOIN_REQ_FROM_USER.getSocketType())){
-			groupJoinReqFromUser(userService,groupService,jsonObjInput);
+			groupJoinReqFromUser(userService,groupService,messageService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.GROUP_JOIN_RES_FROM_USER.getSocketType())){
 			groupJoinResFromUser(userService,groupService,jsonObjInput,jsonMessage);
 		}else if(type.equals(WebSocketMsgType.GROUP_USER_EXIT.getSocketType())){
@@ -73,7 +74,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//用户添加好友请求
-	private void friendAddReq(UserService userService,JSONObject jsonObjInput) throws IOException{
+	private void friendAddReq(UserService userService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int targetId = jsonObjInput.getInt("targetId");
@@ -92,15 +93,23 @@ public class WebSocketController extends TextWebSocketHandler{
 			}
 		}
 		
+		//将请求消息放入数据库
+		UserMessage userMessage = new UserMessage();
+		userMessage.setType(WebSocketMsgType.FRIEND_ADD_REQ.getSocketType());
+		userMessage.setSendTime(new Date());
+		userMessage.setFromUser(sourceUser);
+		userMessage.setToUser(targetUser);
+		
 		if(sessionOther == null){//用户不在线
 			map.put("type",WebSocketMsgType.ERROR.getSocketType());
 			map.put("msg", "该用户不在线，当他上线时将会受到您的请求");
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			session.getBasicRemote().sendText(jsonObjOutput.toString());
 			
-			//用户不在线，将消息放入历史消息
-			
+			userMessage.setIfread(false);
 		}else{//用户在线
+			userMessage.setIfread(true);
+			
 			map.put("type", jsonObjInput.getString("type"));
 			map.put("sourceId", sourceId);
 			map.put("sourceName", sourceUser.getUsername());
@@ -109,6 +118,7 @@ public class WebSocketController extends TextWebSocketHandler{
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			sessionOther.getBasicRemote().sendText(jsonObjOutput.toString());
 		}
+		messageService.save(userMessage);
 	}
 	
 	//用户添加好友回复
@@ -132,7 +142,8 @@ public class WebSocketController extends TextWebSocketHandler{
 		}
 		
 		Session sessionSource = Storage.socketMap.get(sourceId);
-		sessionSource.getBasicRemote().sendText(jsonMessage);
+		if(sessionSource != null)
+			sessionSource.getBasicRemote().sendText(jsonMessage);
 	}
 	
 	//用户删除好友请求
@@ -158,7 +169,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//群组请求添加某个用户
-	private void groupJoinReqFromGroup(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException{
+	private void groupJoinReqFromGroup(UserService userService,GroupService groupService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int targetId = jsonObjInput.getInt("targetId");
@@ -188,15 +199,24 @@ public class WebSocketController extends TextWebSocketHandler{
 			}
 		}
 		
+		//将请求消息放入数据库
+		UserMessage userMessage = new UserMessage();
+		userMessage.setType(WebSocketMsgType.GROUP_JOIN_REQ_FROM_GROUP.getSocketType());
+		userMessage.setSendTime(new Date());
+		userMessage.setFromUser(sourceUser);
+		userMessage.setToUser(targetUser);
+		userMessage.setRelatedGroup(group);
+		
 		if(sessionOther == null){//用户不在线
 			map.put("type",WebSocketMsgType.ERROR.getSocketType());
 			map.put("msg", "该用户不在线，当他上线时将会受到您的请求");
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			session.getBasicRemote().sendText(jsonObjOutput.toString());
 			
-			//用户不在线，将消息放入历史消息
-			
+			userMessage.setIfread(false);
 		}else{//用户在线
+			userMessage.setIfread(true);
+			
 			map.put("type", jsonObjInput.getString("type"));
 			map.put("sourceId", sourceId);
 			map.put("sourceName", sourceUser.getUsername());
@@ -207,6 +227,7 @@ public class WebSocketController extends TextWebSocketHandler{
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			sessionOther.getBasicRemote().sendText(jsonObjOutput.toString());
 		}
+		messageService.save(userMessage);
 	}
 	
 	//群组添加好友回复
@@ -233,7 +254,8 @@ public class WebSocketController extends TextWebSocketHandler{
 		}
 		
 		Session sessionSource = Storage.socketMap.get(sourceId);
-		sessionSource.getBasicRemote().sendText(jsonMessage);
+		if(sessionSource!=null)
+			sessionSource.getBasicRemote().sendText(jsonMessage);
 	}
 	
 	//群组用户删除
@@ -272,7 +294,7 @@ public class WebSocketController extends TextWebSocketHandler{
 	}
 	
 	//用户申请加入某群组的请求
-	private void groupJoinReqFromUser(UserService userService,GroupService groupService,JSONObject jsonObjInput) throws IOException {
+	private void groupJoinReqFromUser(UserService userService,GroupService groupService,MessageService messageService,JSONObject jsonObjInput) throws IOException {
 		Map<String,Object> map = new HashMap<String,Object>();
 		int sourceId = jsonObjInput.getInt("sourceId");
 		int groupId = jsonObjInput.getInt("groupId");
@@ -301,15 +323,24 @@ public class WebSocketController extends TextWebSocketHandler{
 			}
 		}
 		
+		//将请求消息放入数据库
+		UserMessage userMessage = new UserMessage();
+		userMessage.setType(WebSocketMsgType.GROUP_JOIN_REQ_FROM_USER.getSocketType());
+		userMessage.setSendTime(new Date());
+		userMessage.setFromUser(sourceUser);
+		userMessage.setToUser(targetUser);
+		userMessage.setRelatedGroup(group);
+		
 		if(sessionOther == null){//用户不在线
 			map.put("type",WebSocketMsgType.ERROR.getSocketType());
 			map.put("msg", "群组创建者不在线，当他上线时将会受到您的请求");
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			session.getBasicRemote().sendText(jsonObjOutput.toString());
 			
-			//用户不在线，将消息放入历史消息
-			
+			userMessage.setIfread(false);
 		}else{//用户在线
+			userMessage.setIfread(true);
+			
 			map.put("type", jsonObjInput.getString("type"));
 			map.put("sourceId", sourceId);
 			map.put("sourceName", sourceUser.getUsername());
@@ -320,6 +351,7 @@ public class WebSocketController extends TextWebSocketHandler{
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			sessionOther.getBasicRemote().sendText(jsonObjOutput.toString());
 		}
+		messageService.save(userMessage);
 	}
 	
 	//用户申请加入某群组的回复
@@ -346,7 +378,8 @@ public class WebSocketController extends TextWebSocketHandler{
 		}
 		
 		Session sessionSource = Storage.socketMap.get(sourceId);
-		sessionSource.getBasicRemote().sendText(jsonMessage);
+		if(sessionSource != null)
+			sessionSource.getBasicRemote().sendText(jsonMessage);
 	}
 	
 	//用户退出群组
@@ -391,6 +424,15 @@ public class WebSocketController extends TextWebSocketHandler{
 		User sourceUser = userService.findById(User.class, sourceId);
 		User targetUser = userService.findById(User.class, targetId);
 		
+		//将消息放入数据库
+		UserMessage userMessage = new UserMessage();
+		userMessage.setType(WebSocketMsgType.MESSAGE_USER.getSocketType());
+		userMessage.setText(text);
+		userMessage.setSendTime(new Date());
+		userMessage.setFromUser(sourceUser);
+		userMessage.setToUser(targetUser);
+		userMessage.setIfread(false);
+		
 		Session sessionTarget = Storage.socketMap.get(targetId);
 		if(sessionTarget == null){	//用户不在线
 			map.put("type",WebSocketMsgType.ERROR.getSocketType());
@@ -408,16 +450,7 @@ public class WebSocketController extends TextWebSocketHandler{
 			JSONObject jsonObjOutput = JSONObject.fromObject(map);
 			sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
 		}
-		
-		//将消息存入数据库
-		UserMessage message = new UserMessage();
-		message.setType(WebSocketMsgType.MESSAGE_USER.getSocketType());
-		message.setText(text);
-		message.setFromUser(sourceUser);
-		message.setToUser(targetUser);
-		message.setSendTime(new Date());
-		message.setIfread(false);
-		messageService.save(message);
+		messageService.save(userMessage);
 	}
 	
 	//发送群组消息
@@ -464,11 +497,37 @@ public class WebSocketController extends TextWebSocketHandler{
 	
 	
 	@OnOpen
-	public void onOpen(Session session,@PathParam(value="userid")int userid) {
+	public void onOpen(Session session,@PathParam(value="userid")int userid) throws IOException {
 		this.session = session;
 		this.userid = userid;
 		Storage.socketMap.put(userid, this.session);
 		System.out.println(userid+" Client connected");
+		
+		MessageService messageService = (MessageService)ApplicationContextRegister.getApplicationContext().getBean("messageService");
+		
+		List<UserMessage> messageList = messageService.getMessageNotRead(userid);
+		for(UserMessage message : messageList){
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("type", message.getType());
+			map.put("sourceId", message.getFromUser().getId());
+			map.put("sourceName", message.getFromUser().getUsername());
+			map.put("targetId", message.getToUser().getId());
+			map.put("targetName", message.getToUser().getUsername());
+			if(message.getType().equals(WebSocketMsgType.FRIEND_ADD_REQ.getSocketType())){
+				//没什么特别要做的
+			}else if(message.getType().equals(WebSocketMsgType.GROUP_JOIN_REQ_FROM_GROUP.getSocketType())){
+				map.put("groupId", message.getRelatedGroup().getId());
+				map.put("groupname", message.getRelatedGroup().getGroupname());
+			}else if(message.getType().equals(WebSocketMsgType.GROUP_JOIN_REQ_FROM_USER.getSocketType())){
+				map.put("groupId", message.getRelatedGroup().getId());
+				map.put("groupname", message.getRelatedGroup().getGroupname());
+			}else if(message.getType().equals(WebSocketMsgType.MESSAGE_USER.getSocketType())){
+				map.put("sendTime", new Date());
+				map.put("text", message.getText());
+			}
+			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+			session.getBasicRemote().sendText(jsonObjOutput.toString());
+		}
 	}
  
 	@OnClose

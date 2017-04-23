@@ -62,6 +62,41 @@ public class MessageController extends BaseController{
 		return jsonObj.toString();
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/getHistoryMessage",method=RequestMethod.POST)
+	public String getHistoryMessage(
+			@RequestParam(value="type",required=true) String type,
+			@RequestParam(value="sourceId",required=true) int sourceId,
+			@RequestParam(value="targetId",required=true) int targetId,
+			@RequestParam(value="number",required=true) int number,
+			HttpServletRequest request, 
+			HttpServletResponse response
+			) throws IllegalStateException, IOException{
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		try {
+			if("user".equals(type)){
+				List<UserMessage> messageList = messageService.getUserMessage(sourceId,targetId,number,false);
+				messageService.setIfRead(sourceId, targetId);
+				map.put("messageList", messageList);
+				map.put("sourceId",sourceId);
+			}else if("group".equals(type)){
+				List<GroupMessage> messageList = messageService.getGroupMessage(sourceId, targetId, number);
+				map.put("messageList", messageList);
+				map.put("groupId",targetId);
+			}
+			map.put("code", ErrorType.ERROR_SUCCESS.getCode());
+			map.put("msg", ErrorType.ERROR_SUCCESS.getMsg());
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("code", ErrorType.ERROR_UNKNOWN.getCode());
+			map.put("msg", ErrorType.ERROR_UNKNOWN.getMsg());
+		}
+		
+		JSONObject jsonObj = JSONObject.fromObject(map);
+		return jsonObj.toString();
+	}
+	
 	@Resource(name="messageService")
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;

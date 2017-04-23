@@ -1,6 +1,8 @@
 package com.rtcchat.serviceImpl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -18,6 +20,7 @@ import com.rtcchat.entity.User;
 import com.rtcchat.entity.UserMessage;
 import com.rtcchat.service.MessageService;
 import com.rtcchat.tools.WebSocketMsgType;
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
 @Service("messageService")
 public class MessageServiceImpl extends BaseServiceImpl implements MessageService{
@@ -99,6 +102,46 @@ public class MessageServiceImpl extends BaseServiceImpl implements MessageServic
 			messageDao.update(message);
 		}
 	}
+	
+	@Override
+	public List<UserMessage> getMessageNotRead(int userId) {
+		User user = userDao.findById(User.class, userId);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UserMessage.class);
+		criteria.add(Restrictions.eq(UserMessage.FIELD_TOUSER, user));
+		criteria.add(Restrictions.eq(UserMessage.FIELD_IFREAD, false));
+		List<UserMessage> messageList = messageDao.findByCriteria(criteria);
+		for(UserMessage message : messageList){
+			System.out.println(message.getFromUser().getId());
+			System.out.println(message.getToUser().getId());
+			if(message.getRelatedGroup() != null)
+				System.out.println(message.getRelatedGroup().getId());
+		}
+		
+		messageDao.clear();
+		
+		for(UserMessage message : messageList){
+			message.getFromUser().setPassword("");
+			message.getFromUser().setFriends(null);
+			message.getFromUser().setGroupsCreated(null);
+			message.getFromUser().setGroupsJoined(null);
+			
+			message.getToUser().setPassword("");
+			message.getToUser().setFriends(null);
+			message.getToUser().setGroupsCreated(null);
+			message.getToUser().setGroupsJoined(null);
+			
+			if(message.getRelatedGroup() != null){
+				message.getRelatedGroup().getCreator().setPassword("");
+				message.getRelatedGroup().getCreator().setFriends(null);
+				message.getRelatedGroup().getCreator().setGroupsCreated(null);
+				message.getRelatedGroup().getCreator().setGroupsJoined(null);
+				message.getRelatedGroup().setMembers(null);
+			}
+		}
+		
+		return messageList;
+	}
+	
 	
 	@Resource(name="messageDao")
 	public void setMessageDao(MessageDao messageDao) {

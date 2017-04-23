@@ -15,6 +15,36 @@ getMyGroupsAndFriends(true,true,true,function(){
 
 //初始化websocket
 initWebSocket(projectPath,myId);
+//初始化表情按钮
+initFace();
+
+//初始化表情
+function initFace(){
+	//添加表情按钮
+	$("#sendText").emoji({
+	    button: "#emojiBtn",
+	    showTab: false,
+	    animation: 'slide',
+	    icons: [{
+	        name: "QQ表情",
+	        path: "../images/qqFace/",
+	        maxNum: 91,
+	        excludeNums: [41, 45, 54],
+	        file: ".gif"
+	    }]
+	});
+}
+
+//将表情代码转换为表情
+function transferFace(){
+	$("#chatContentUl li").emojiParse({
+	    icons: [{
+	        path: "../images/qqFace/",
+	        file: ".gif",
+	        placeholder: "#em1_{alias}#"
+	    }]
+	});
+}
 
 //获取本用户好友、创建的群组和加入的群组
 function getMyGroupsAndFriends(ifGetMyGroups,ifGetMyFriends,ifGetJoinedGroups,callback){
@@ -203,6 +233,7 @@ function chatSendMessage(){
 						"<div>"+text+"</div>"+
 					"</li>";
 	$("#chatContentUl").append(tempHtml);
+	transferFace();
 	
 	if(messageType == "user"){
 		socketData = 		data = {
@@ -282,7 +313,42 @@ function loadChatContent(messageList){
 	}
 	$("#chatContentUl").empty();
 	$("#chatContentUl").append(chatContentHtml);
+	transferFace();
 }
 
+//获取历史消息
+function getHistoryMessage(){
+	var messageType = $("#chatTargetType").val();
+	var targetId = parseInt($("#chatTargetId").val());
+	var text = $("#sendText").val();
+	
+	$("#sendText").val("");
+	if(targetId == 0){
+		alert("请选择对象");
+		return;
+	}
+	
+	var url = $("#projectPath").val()+"/message/getHistoryMessage";
+	var data = {
+		type : messageType,
+		sourceId : myId,
+		targetId : targetId,
+		number : 100
+	}
+	ajaxRequest(url,data,function(res){
+		var dataRes = JSON.parse(res);
+		if(dataRes.code === "200"){
+			console.log(dataRes);
+			loadChatContent(dataRes.messageList);
+			var tempHtml = 							
+				"<li style=\"list-style: none;\">"+
+					"<div class=\"word-color\" style=\"text-align: center;\">以上是历史消息</div>"+
+				"</li>";
+			$("#chatContentUl").append(tempHtml);
+		}else{
+			alert(dataRes.msg);
+		}
+	});
+}
 
 
