@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="rtcchat">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/controller"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/service"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/dao"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/tool"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/settings"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/entity"/>
+        <property name="context-root" value="rtcchat"/>
+        <property name="java-output-path" value="/rtcchat/build/classes"/>
+    </wb-module>
+</project-modules>
