@@ -27,29 +27,24 @@ public class FileServiceImpl extends BaseServiceImpl implements FileService{
 	private FileDao fileDao = null;
 
 	@Override
-	public ErrorType fileUpload(int sourceId, int targetId, String type, String originName, String path) {
-		try {
-			File myFile = new File();
-			User sourceUser = userDao.findById(User.class, sourceId);
-			if(FileType.FILE_TYPE_USER.getType().equals(type)){
-				User targetUser =  userDao.findById(User.class, targetId);
-				myFile.setSendToUser(targetUser);
-			}else if(FileType.FILE_TYPE_GROUP.getType().equals(type)){
-				Group targetGroup = groupDao.findById(Group.class, targetId);
-				myFile.setBelongToGroup(targetGroup);
-			}
-			myFile.setBelongToUser(sourceUser);
-			myFile.setOriginName(originName);
-			myFile.setFilepath(path);
-			myFile.setUploadTime(new Date());
-			myFile.setFiletype(type);
-			fileDao.save(myFile);
-			
-			return ErrorType.ERROR_SUCCESS;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ErrorType.ERROR_UNKNOWN;
+	public int fileUpload(int sourceId, int targetId, String type, String originName, String path) {
+		File myFile = new File();
+		User sourceUser = userDao.findById(User.class, sourceId);
+		if(FileType.FILE_TYPE_USER.getType().equals(type)){
+			User targetUser =  userDao.findById(User.class, targetId);
+			myFile.setSendToUser(targetUser);
+		}else if(FileType.FILE_TYPE_GROUP.getType().equals(type)){
+			Group targetGroup = groupDao.findById(Group.class, targetId);
+			myFile.setBelongToGroup(targetGroup);
 		}
+		myFile.setBelongToUser(sourceUser);
+		myFile.setOriginName(originName);
+		myFile.setFilepath(path);
+		myFile.setUploadTime(new Date());
+		myFile.setFiletype(type);
+		fileDao.save(myFile);
+		
+		return myFile.getId();
 		
 	}
 
@@ -59,12 +54,14 @@ public class FileServiceImpl extends BaseServiceImpl implements FileService{
 		User sourceUser = userDao.findById(User.class, sourceId);
 		if(FileType.FILE_TYPE_USER.getType().equals(type)){
 			User targetUser =  userDao.findById(User.class, targetId);
-			criteria.add(Restrictions.eq(File.FIELD_SENDTOUSER, targetUser));
+//			criteria.add(Restrictions.eq(File.FIELD_SENDTOUSER, targetUser));
+			criteria.add(Restrictions.or(Restrictions.eq(File.FIELD_BELONGTOUSER, sourceUser), Restrictions.eq(File.FIELD_BELONGTOUSER, targetUser)));
+			criteria.add(Restrictions.or(Restrictions.eq(File.FIELD_SENDTOUSER, sourceUser), Restrictions.eq(File.FIELD_SENDTOUSER, targetUser)));
 		}else if(FileType.FILE_TYPE_GROUP.getType().equals(type)){
 			Group targetGroup = groupDao.findById(Group.class, targetId);
 			criteria.add(Restrictions.eq(File.FIELD_BELONGTOGROUP, targetGroup));
 		}
-		criteria.add(Restrictions.eq(File.FIELD_BELONGTOUSER, sourceUser));
+//		criteria.add(Restrictions.eq(File.FIELD_BELONGTOUSER, sourceUser));
 		criteria.add(Restrictions.eq(File.FIELD_FILETYPE, type));
 		criteria.addOrder(Order.asc(File.FIELD_UPLOADTIME));
 		List<File> fileList = fileDao.findByCriteria(criteria);

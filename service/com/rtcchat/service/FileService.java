@@ -9,7 +9,7 @@ import com.rtcchat.tools.ErrorType;
 public interface FileService extends BaseService {
 
 	//将上传的文件信息存入数据库
-	public ErrorType fileUpload(int sourceId,int targetId,String type,String originName,String path);
+	public int fileUpload(int sourceId,int targetId,String type,String originName,String path);
 	
 	//获取指定的文件信息
 	public List<File> getFiles(int sourceId,int targetId,String type);

@@ -57,7 +57,7 @@
         formData.append("type",$("#chatTargetType").val());
         formData.append("sourceId",myId);
         formData.append("targetId",$("#chatTargetId").val());
-        console.log(formData.get("file"));//formData因其封装性，无法使用formData.headImg访问其属性
+//         console.log(formData.get("file"));//formData因其封装性，无法使用formData.headImg访问其属性
 
         //如果有汉字则退出
      	var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
@@ -81,7 +81,9 @@
             	var dataRes = JSON.parse(res);
             	if(dataRes.code === "200"){
             		$("#fileRepertoryModal").modal("hide");
-            		alert("上传成功");
+            		var fileId = dataRes.fileId;
+            		sendFileLink(fileId);
+            		alert("上传文件成功");
             	}else{
             		alert(dataRes.msg);
             	}
@@ -91,6 +93,32 @@
         });
     });
     
+    //发送文件链接
+    function sendFileLink(fileId){
+    	var type = $("#chatTargetType").val();
+    	var targetId = $("#chatTargetId").val();
+    	if(type == "user"){
+			var socketData = {
+					type : "fileUser",
+					fileId : fileId,
+					sourceId : myId,
+					targetId : targetId
+			}
+    	}else if(type == "group"){
+			var socketData = {
+					type : "fileGroup",
+					fileId : fileId,
+					sourceId : myId,
+					targetId : targetId
+			}
+    	}else{
+    		return;
+    	}
+		var socketDataStr = JSON.stringify(socketData);
+		sendMessage(socketDataStr);
+    }
+    
+    //获取文件信息
    	function getFiles(){
    		var sourceId = myId;
    		var targetId = $("#chatTargetId").val();

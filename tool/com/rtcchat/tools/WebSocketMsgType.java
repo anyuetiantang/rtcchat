@@ -24,7 +24,9 @@ public enum WebSocketMsgType {
 	GROUP_USER_EXIT("groupUserExit","群组用户退出"),
 	GROUP_USER_EXIT_RES("groupUserExitRes","群组用户退出的回应"),
 	MESSAGE_USER("messageUser","私聊信息"),
-	MESSAGE_GROUP("messageGroup","群组信息");
+	MESSAGE_GROUP("messageGroup","群组信息"),
+	FILE_USER("fileUser","用户文件"),
+	FILE_GROUP("fileGroup","群组文件");
 	
 	private String socketType;
 	private String description;

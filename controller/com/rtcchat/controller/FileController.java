@@ -40,25 +40,32 @@ public class FileController extends BaseController {
 			HttpServletResponse response
 			) throws IllegalStateException, IOException{
 		
-		Map<String,String> map = new HashMap<String,String>();
-		if(!file.isEmpty()){
-			HttpSession session = request.getSession();
-			String username = (String)session.getAttribute("username");
-			String newName = username+"_" +"to_"+type+targetId+"_"+file.getOriginalFilename();
-			String logicPath = "/fileRepertory/"+newName;
-            String path = request.getServletContext().getRealPath("/")+"fileRepertory\\"+newName;
-            System.out.println(path);
-            File newFile = new File(path);
-            //通过CommonsMultipartFile本身的transferTo方法来实现
-            file.transferTo(newFile);
+		Map<String, Object> map = new HashMap<String,Object>();
+		try {
+			if(!file.isEmpty()){
+				HttpSession session = request.getSession();
+				String username = (String)session.getAttribute("username");
+				String newName = username+"_" +"to_"+type+targetId+"_"+file.getOriginalFilename();
+				String logicPath = "/fileRepertory/"+newName;
+			    String path = request.getServletContext().getRealPath("/")+"fileRepertory\\"+newName;
+			    System.out.println(path);
+			    File newFile = new File(path);
+			    //通过CommonsMultipartFile本身的transferTo方法来实现
+			    file.transferTo(newFile);
 
-            ErrorType errMsg = fileService.fileUpload(sourceId, targetId, type, file.getOriginalFilename(),logicPath);
-            
-    		map.put("code", errMsg.getCode());
-    		map.put("msg", errMsg.getMsg());
-		}else{
-    		map.put("code", ErrorType.ERROR_PARAM.getCode());
-    		map.put("msg", ErrorType.ERROR_PARAM.getMsg());
+			    int fileId = fileService.fileUpload(sourceId, targetId, type, file.getOriginalFilename(),logicPath);
+			    
+			    map.put("fileId", fileId);
+				map.put("code", ErrorType.ERROR_SUCCESS.getCode());
+				map.put("msg", ErrorType.ERROR_SUCCESS.getMsg());
+			}else{
+				map.put("code", ErrorType.ERROR_PARAM.getCode());
+				map.put("msg", ErrorType.ERROR_PARAM.getMsg());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("code", ErrorType.ERROR_UNKNOWN.getCode());
+			map.put("msg", ErrorType.ERROR_UNKNOWN.getMsg());
 		}
 		
 		JSONObject jsonObj = JSONObject.fromObject(map);

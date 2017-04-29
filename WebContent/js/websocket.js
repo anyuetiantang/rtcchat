@@ -82,6 +82,12 @@ function onMessage(event){
 		case "messageGroup":
 			messageGroup(socketData);
 			break;
+		case "fileUser":
+			fileUser(socketData);
+			break;
+		case "fileGroup":
+			fileGroup(socketData);
+			break;
 		default:
 			alert(socketData.msg);
 			break;
@@ -287,6 +293,43 @@ function messageGroup(socketData){
 									"<div class=\"word-color\">"+socketData.sourceName+
 									" "+transferTime(socketData.sendTime)+"</div>"+
 									"<div>"+socketData.text+"</div>"+
+								"</li>";
+		$("#chatContentUl").append(chatContentHtml);
+		transferFace();
+	}else{
+		var groupId = socketData.groupId;
+		$("#myGroupListButton"+groupId).addClass("hasMessage");
+	}
+}
+
+//获取私人文件
+function fileUser(socketData){
+	var projectPath =  $("#projectPath").val();
+	if($("#chatTargetType").val()==="user" && $("#chatTargetId").val()==socketData.sourceId){
+		var chatContentHtml = "";
+			chatContentHtml += 	"<li style=\"list-style: none;\">"+
+									"<div class=\"word-color\">"+socketData.sourceName+
+									" "+transferTime(socketData.sendTime)+"</div>"+
+									"<div><a href=\""+projectPath + socketData.file.filepath+"\">"+socketData.file.originName+"</a></div>"+
+								"</li>";
+		$("#chatContentUl").append(chatContentHtml);
+		transferFace();
+	}else{
+		var sourceId = socketData.sourceId;
+		$("#myFriendListButton"+sourceId).addClass("hasMessage");
+	}
+}
+
+//获取群组文件
+function fileGroup(socketData){
+	console.log(socketData);
+	var projectPath =  $("#projectPath").val();
+	if($("#chatTargetType").val()==="group" && $("#chatTargetId").val()==socketData.groupId){
+		var chatContentHtml = "";
+			chatContentHtml += 	"<li style=\"list-style: none;\">"+
+									"<div class=\"word-color\">"+socketData.sourceName+
+									" "+transferTime(socketData.sendTime)+"</div>"+
+									"<div><a href=\""+projectPath + socketData.file.filepath+"\">"+socketData.file.originName+"</a></div>"+
 								"</li>";
 		$("#chatContentUl").append(chatContentHtml);
 		transferFace();

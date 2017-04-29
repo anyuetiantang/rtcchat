@@ -40,7 +40,7 @@
 <%-- 				    	<img style="width: 25px;height: 25px;" src="<%=request.getContextPath()%>/images/head.jpg">&nbsp;&nbsp;暗月天堂cy --%>
 				    </div>
 				    <div class="col-md-4 text-right word-color" style="margin-top: 15px;font-size: 15px;">
-				    	此心拖泥带水，是人生最苦处
+				    	Hello World!
 				    </div>
 			  	</div>
 			</div>
@@ -118,7 +118,7 @@
 					<div id="chatTool" style="width:100%;height:5%;border-top: 1px solid grey;">
 						<button onclick="getFiles()" class="btn btn-default btn-lg" data-toggle="modal" data-target="#fileRepertoryModal" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
 						<button onclick="getHistoryMessage()" class="btn btn-default btn-lg" style="padding:0px;"><span class="glyphicon glyphicon-book"></span></button>
-						<button id="emojiBtn" class="btn btn-default btn-lg" style="padding:0px;">:)</button>
+						<button class="btn btn-default btn-lg" style="padding:0px;"><span id="emojiBtn" class="glyphicon glyphicon-heart"></span></button>
 					</div>
 					<div id="sendContent" style="width:100%;height:20%;padding: 0px;">
 					  	<div class="form-group"> 

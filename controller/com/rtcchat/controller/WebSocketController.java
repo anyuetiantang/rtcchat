@@ -17,10 +17,12 @@ import javax.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.rtcchat.entity.File;
 import com.rtcchat.entity.Group;
 import com.rtcchat.entity.GroupMessage;
 import com.rtcchat.entity.User;
 import com.rtcchat.entity.UserMessage;
+import com.rtcchat.service.FileService;
 import com.rtcchat.service.GroupService;
 import com.rtcchat.service.MessageService;
 import com.rtcchat.service.UserService;
@@ -42,6 +44,7 @@ public class WebSocketController extends TextWebSocketHandler{
 		UserService userService = (UserService)ApplicationContextRegister.getApplicationContext().getBean("userService");
 		GroupService groupService = (GroupService)ApplicationContextRegister.getApplicationContext().getBean("groupService");
 		MessageService messageService = (MessageService)ApplicationContextRegister.getApplicationContext().getBean("messageService");
+		FileService fileService = (FileService)ApplicationContextRegister.getApplicationContext().getBean("fileService");
 		
 		JSONObject jsonObjInput = JSONObject.fromObject(jsonMessage);
 		String type = jsonObjInput.getString("type");
@@ -69,6 +72,10 @@ public class WebSocketController extends TextWebSocketHandler{
 			sendUserMessage(userService,messageService,jsonObjInput);
 		}else if(type.equals(WebSocketMsgType.MESSAGE_GROUP.getSocketType())){
 			sendGroupMessage(userService,groupService,messageService,jsonObjInput);
+		}else if(type.equals(WebSocketMsgType.FILE_USER.getSocketType())){
+			sendUserFile(userService,groupService,fileService,messageService,jsonObjInput);
+		}else if(type.equals(WebSocketMsgType.FILE_GROUP.getSocketType())){
+			sendGroupFile(userService,groupService,fileService,messageService,jsonObjInput);
 		}
 		
 	}
@@ -495,6 +502,107 @@ public class WebSocketController extends TextWebSocketHandler{
 		messageService.save(groupMessage);
 	}
 	
+	//发送私人文件
+	public void sendUserFile(UserService userService,GroupService groupService,FileService fileService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
+		Map<String,Object> map = new HashMap<String,Object>();
+		int sourceId = jsonObjInput.getInt("sourceId");
+		int targetId = jsonObjInput.getInt("targetId");
+		int fileId = jsonObjInput.getInt("fileId");
+		
+		User sourceUser = userService.findById(User.class, sourceId);
+		User targetUser = userService.findById(User.class, targetId);
+		File file = fileService.findById(File.class, fileId);
+		Session sessionSource = Storage.socketMap.get(sourceId);
+		Session sessionTarget = Storage.socketMap.get(targetId);
+		if(sessionTarget == null){
+			map.put("type",WebSocketMsgType.ERROR.getSocketType());
+			map.put("msg", "该用户不在线，你的文件已经保存到服务器！");
+			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+			sessionSource.getBasicRemote().sendText(jsonObjOutput.toString());
+		}else{
+			file.setBelongToGroup(null);
+			file.setBelongToUser(null);
+			file.setSendToUser(null);
+			
+			map.put("type", WebSocketMsgType.FILE_USER.getSocketType());
+			map.put("sourceId", sourceId);
+			map.put("sourceName", sourceUser.getUsername());
+			map.put("targetId", targetId);
+			map.put("targetName", targetUser.getUsername());
+			map.put("sendTime", new Date());
+			map.put("file", file);
+			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+			sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
+		}
+		//将消息放入数据库
+		UserMessage userMessage = new UserMessage();
+		userMessage.setType(WebSocketMsgType.MESSAGE_USER.getSocketType());
+		userMessage.setText("I send a file "+file.getOriginName());
+		userMessage.setSendTime(new Date());
+		userMessage.setFromUser(sourceUser);
+		userMessage.setToUser(targetUser);
+		userMessage.setIfread(false);
+		messageService.save(userMessage);
+	}
+	
+	//发送群组文件
+	public void sendGroupFile(UserService userService,GroupService groupService,FileService fileService,MessageService messageService,JSONObject jsonObjInput) throws IOException{
+		Map<String,Object> map = new HashMap<String,Object>();
+		int sourceId = jsonObjInput.getInt("sourceId");
+		int groupId = jsonObjInput.getInt("targetId");
+		int fileId = jsonObjInput.getInt("fileId");
+		
+		User sourceUser = userService.findById(User.class, sourceId);
+		Group targetGroup = groupService.findById(Group.class, groupId);
+		File file = fileService.findById(File.class, fileId);
+		file.setBelongToGroup(null);
+		file.setBelongToUser(null);
+		file.setSendToUser(null);
+		
+		User creator = groupService.findCreator(groupId);
+		Session sessionTarget = Storage.socketMap.get(creator.getId());
+		if(sessionTarget != null){
+			try {
+				map.put("type", WebSocketMsgType.FILE_GROUP.getSocketType());
+				map.put("sourceId", sourceId);
+				map.put("sourceName", sourceUser.getUsername());
+				map.put("groupId", groupId);
+				map.put("groupName", targetGroup.getGroupname());
+				map.put("sendTime", new Date());
+				map.put("file", file);
+				JSONObject jsonObjOutput = JSONObject.fromObject(map);
+				sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Set<User> members = groupService.findMembersById(groupId);
+		for(User member : members){
+			sessionTarget = Storage.socketMap.get(member.getId());
+			if(sessionTarget != null){
+				map.put("type", WebSocketMsgType.FILE_GROUP.getSocketType());
+				map.put("sourceId", sourceId);
+				map.put("sourceName", sourceUser.getUsername());
+				map.put("groupId", groupId);
+				map.put("groupName", targetGroup.getGroupname());
+				map.put("sendTime", new Date());
+				map.put("file", file);
+				JSONObject jsonObjOutput = JSONObject.fromObject(map);
+				sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
+			}
+		}
+		
+		//将数据存入数据库
+		GroupMessage groupMessage = new GroupMessage();
+		groupMessage.setType(WebSocketMsgType.MESSAGE_GROUP.getSocketType());
+		groupMessage.setText("I send a file "+file.getOriginName()+" to the repository");
+		groupMessage.setBelongToGroup(targetGroup);
+		groupMessage.setFromUser(sourceUser);
+		groupMessage.setSendTime(new Date());
+		messageService.save(groupMessage);
+	}
+	
 	
 	@OnOpen
 	public void onOpen(Session session,@PathParam(value="userid")int userid) throws IOException {
@@ -514,11 +622,16 @@ public class WebSocketController extends TextWebSocketHandler{
 			map.put("targetId", message.getToUser().getId());
 			map.put("targetName", message.getToUser().getUsername());
 			if(message.getType().equals(WebSocketMsgType.FRIEND_ADD_REQ.getSocketType())){
-				//没什么特别要做的
+				message.setIfread(true);
+				messageService.update(message);
 			}else if(message.getType().equals(WebSocketMsgType.GROUP_JOIN_REQ_FROM_GROUP.getSocketType())){
+				message.setIfread(true);
+				messageService.update(message);
 				map.put("groupId", message.getRelatedGroup().getId());
 				map.put("groupname", message.getRelatedGroup().getGroupname());
 			}else if(message.getType().equals(WebSocketMsgType.GROUP_JOIN_REQ_FROM_USER.getSocketType())){
+				message.setIfread(true);
+				messageService.update(message);
 				map.put("groupId", message.getRelatedGroup().getId());
 				map.put("groupname", message.getRelatedGroup().getGroupname());
 			}else if(message.getType().equals(WebSocketMsgType.MESSAGE_USER.getSocketType())){
