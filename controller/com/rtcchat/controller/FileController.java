@@ -41,6 +41,7 @@ public class FileController extends BaseController {
 			) throws IllegalStateException, IOException{
 		
 		Map<String, Object> map = new HashMap<String,Object>();
+		long startTime = System.currentTimeMillis();
 		try {
 			if(!file.isEmpty()){
 				HttpSession session = request.getSession();
@@ -69,6 +70,8 @@ public class FileController extends BaseController {
 		}
 		
 		JSONObject jsonObj = JSONObject.fromObject(map);
+		long endTime = System.currentTimeMillis();
+		System.out.println("文件上传时间："+(endTime - startTime));
 		
 		return jsonObj.toString();
 	}

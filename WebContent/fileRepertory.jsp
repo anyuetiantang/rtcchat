@@ -35,7 +35,7 @@
     //上传文件设置
     $("#fileUpload").fileinput({
 	        language: 'zh', //设置语言
-  	        allowedFileExtensions : ['zip'],//接收的文件后缀
+//   	        allowedFileExtensions : ['zip'],//接收的文件后缀
   	        showUpload: true,//是否显示上传按钮
   	        showCaption: true,//是否显示标题
     });
@@ -66,8 +66,8 @@
    			return;
    		}   
    		
-   		if(filesize > 10*1024*1000){
-   			alert("图片大小不能超过10M");
+   		if(filesize > 100*1024*1000){
+   			alert("图片大小不能超过100M");
    			return;
    		}
         

@@ -213,7 +213,7 @@ function textareaKeyDown(){
 function chatSendMessage(){
 	var messageType = $("#chatTargetType").val();
 	var targetId = parseInt($("#chatTargetId").val());
-	var text = $("#sendText").val();
+	var text = $("#sendText").val().replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 	var socketData=null;
 	
 	$("#sendText").val("");
@@ -236,7 +236,7 @@ function chatSendMessage(){
 	transferFace();
 	
 	if(messageType == "user"){
-		socketData = 		data = {
+		socketData = {
 				type : "messageUser",
 				sourceId : myId,
 				targetId : targetId,
@@ -351,4 +351,27 @@ function getHistoryMessage(){
 	});
 }
 
-
+//function videoBuild(){
+//	var type = $("#chatTargetType").val();
+//	var targetId = parseInt($("#chatTargetId").val());
+//	
+//	if(type == "user"){
+//		socketData = {
+//				type : "videoUser",
+//				sourceId : myId,
+//				targetId : targetId,
+//				room : type+targetId
+//			}
+//		var socketDataStr = JSON.stringify(socketData);
+//		sendMessage(socketDataStr);
+//	}else if(type === "group"){
+//		socketData = {
+//				type : "messageGroup",
+//				sourceId : myId,
+//				targetId : targetId,
+//				text : text
+//			}
+//		var socketDataStr = JSON.stringify(socketData);
+//		sendMessage(socketDataStr);
+//	}
+//}

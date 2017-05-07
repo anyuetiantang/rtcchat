@@ -160,8 +160,8 @@
     		
     		var url = "<%=request.getContextPath() %>/user/passwordChange";
     		var data = {
-    			passwordOld : passwordOld,
-    			passwordNew : passwordNew
+    			passwordOld : hex_md5(passwordOld),
+    			passwordNew : hex_md5(passwordNew)
     		}
     		ajaxRequest(url,data,function(res){
     			var dataRes = JSON.parse(res);

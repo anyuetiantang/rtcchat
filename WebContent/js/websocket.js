@@ -88,6 +88,9 @@ function onMessage(event){
 		case "fileGroup":
 			fileGroup(socketData);
 			break;
+//		case "videoUser":
+//			videoUser(socketData);
+//			break;
 		default:
 			alert(socketData.msg);
 			break;
@@ -338,3 +341,12 @@ function fileGroup(socketData){
 		$("#myGroupListButton"+groupId).addClass("hasMessage");
 	}
 }
+
+////建立视频通信
+//function videoUser(socketData){
+//	if(confirm(socketData.sourceName + "申请与你视频，请问是否同意")){
+//		webrtc.joinRoom(socketData.room);
+//	}else{
+//		alert("你拒绝了"+socketData.sourceName+"的视频请求")
+//	}
+//}

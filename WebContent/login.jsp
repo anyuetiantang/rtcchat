@@ -12,6 +12,7 @@
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.js"></script>
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.cookie.js"></script>
 	<script src="<%=request.getContextPath() %>/js/bootstrap/bootstrap.min.js"></script>
+	<script src="<%=request.getContextPath() %>/js/md5.js"></script>
 </head>
 <body>
 	<input id="projectPath" type="hidden" value="<%=request.getContextPath() %>">

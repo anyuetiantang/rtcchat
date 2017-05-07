@@ -26,6 +26,8 @@
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.mousewheel-3.0.6.min.js"></script>
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.mCustomScrollbar.min.js"></script>
 	<script src="<%=request.getContextPath() %>/js/jquery/jquery.emoji.min.js"></script>
+	<script src="<%=request.getContextPath() %>/js/md5.js"></script>
+	<script src="<%=request.getContextPath() %>/js/latest-v2.js"></script>
 </head>
 <body>
 	<input id="myId" type="hidden" value="${sessionScope.userid }">
@@ -119,6 +121,7 @@
 						<button onclick="getFiles()" class="btn btn-default btn-lg" data-toggle="modal" data-target="#fileRepertoryModal" style="padding:0px;"><span class="glyphicon glyphicon-open-file"></span></button>
 						<button onclick="getHistoryMessage()" class="btn btn-default btn-lg" style="padding:0px;"><span class="glyphicon glyphicon-book"></span></button>
 						<button class="btn btn-default btn-lg" style="padding:0px;"><span id="emojiBtn" class="glyphicon glyphicon-heart"></span></button>
+<!-- 						<button onclick="videoBuild()" class="btn btn-default btn-lg" style="padding:0px;"><span class="glyphicon glyphicon-book"></span></button> -->
 					</div>
 					<div id="sendContent" style="width:100%;height:20%;padding: 0px;">
 					  	<div class="form-group"> 

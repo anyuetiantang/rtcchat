@@ -603,6 +603,31 @@ public class WebSocketController extends TextWebSocketHandler{
 		messageService.save(groupMessage);
 	}
 	
+//	//发送用户视频
+//	public void videoUser(UserService userService,JSONObject jsonObjInput) throws IOException{
+//		Map<String,Object> map = new HashMap<String,Object>();
+//		int sourceId = jsonObjInput.getInt("sourceId");
+//		int targetId = jsonObjInput.getInt("targetId");
+//		String room = jsonObjInput.getString("room");
+//		
+//		User sourceUser = userService.findById(User.class, sourceId);
+//		
+//		Session sessionTarget = Storage.socketMap.get(targetId);
+//		if(sessionTarget == null){
+//			map.put("type",WebSocketMsgType.ERROR.getSocketType());
+//			map.put("msg", "该用户不在线，无法建立视频通信");
+//			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+//			this.session.getBasicRemote().sendText(jsonObjOutput.toString());
+//		}else{
+//			map.put("type", WebSocketMsgType.VIDEO_USER.getSocketType());
+//			map.put("sourceId", sourceId);
+//			map.put("sourceName", sourceUser.getUsername());
+//			map.put("targetId", targetId);
+//			map.put("room", room);
+//			JSONObject jsonObjOutput = JSONObject.fromObject(map);
+//			sessionTarget.getBasicRemote().sendText(jsonObjOutput.toString());
+//		}
+//	}
 	
 	@OnOpen
 	public void onOpen(Session session,@PathParam(value="userid")int userid) throws IOException {
@@ -646,6 +671,6 @@ public class WebSocketController extends TextWebSocketHandler{
 	@OnClose
 	public void onClose() {
 		Storage.socketMap.remove(userid);
-		System.out.println("Connection closed");
+		System.out.println(userid + " Connection closed");
 	}
 }

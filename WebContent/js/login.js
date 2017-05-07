@@ -43,7 +43,7 @@ $(function(){
 		var path = $("#projectPath").val()+"/start/loginRequest"
 		ajaxRequest(path,{
 			username : username,
-			password : password,
+			password : hex_md5(password),
 		},function(res){
 			var dataRes = JSON.parse(res);
 			console.log(dataRes);
@@ -76,7 +76,7 @@ $(function(){
 		var path = $("#projectPath").val()+"/start/register";
 		ajaxRequest(path,{
 			username : username,
-			password : password,
+			password : hex_md5(password),
 			contact : contact
 		},function(res){
 			var dataRes = JSON.parse(res);

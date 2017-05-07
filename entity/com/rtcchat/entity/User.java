@@ -39,7 +39,7 @@ public class User implements Serializable {
 	private String username;//用户名
 	private String password;//密码
 	private String contact;//联系方式
-	private String headImg;//头像，以Blob格式存储在数据库中
+	private String headImg;//头像的路径
 	private Set<Group> groupsCreated;//每个用户创建的群组
 	private Set<Group> groupsJoined;//每个用户加入的群组
 	private Set<User> friends;//每个用户的好友
